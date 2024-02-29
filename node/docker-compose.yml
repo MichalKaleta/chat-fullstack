@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+    # node
+    node:
+        build: .
+        volumes:
+            - ./src:/src
+            - ./data:/data
+            - ./package.json:/src/package.json
+        ports:
+            - "3000:3000"
+        command: sh -c "npm install && npm run start"
