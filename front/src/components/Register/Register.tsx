@@ -17,10 +17,6 @@ const Register: ReactComponentElement<any> = (props: any) => {
 			.then((res) => console.log(res));
 	};
 
-	useEffect(() => {
-		sendRegisterData();
-	}, []);
-
 	return (
 		<div className="mt-4">
 			<span className="mx-2">

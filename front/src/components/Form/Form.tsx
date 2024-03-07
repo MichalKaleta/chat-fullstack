@@ -1,10 +1,10 @@
 import React from "react";
 
-function Button({ onClick = () => null, text = "Submit" }) {
+function Button({ onClick = () => null, text = "Submit", className = "" }) {
 	return (
 		<>
 			<button
-				className=" bg-black ml-2 mt-2 rounded-md"
+				className={`bg-black mx-2 mt-2 rounded-md h-11 ${className}`}
 				onClick={(e) => {
 					e.preventDefault();
 					onClick();
@@ -28,21 +28,21 @@ function Button({ onClick = () => null, text = "Submit" }) {
 
 function Input({
 	placeholder = "",
-	type = "button",
+	type = "text",
 	label = "",
 	name = label || "",
-	onChange = () => null,
+	value = "",
+	onChange,
+	className,
 }) {
 	return (
 		<>
 			{label && <label htmlFor={name || label || ""}>{label}</label>}
 			<input
+				value={value}
 				name={name || label || ""}
 				type={type}
-				className="w-96 border-black border-2 p-2.5 
-                    focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] 
-                    active:shadow-[2px_2px_0px_rgba(0,0,0,1)] 
-                    rounded-md m-2"
+				className={`w-96 border-black border-2 p-2.5 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] rounded-md m-2 ${className}`}
 				placeholder={placeholder}
 				onChange={onChange}
 			/>
@@ -50,4 +50,10 @@ function Input({
 	);
 }
 
-export { Button, Input };
+const InputContainer = ({ className, children }) => (
+	<div className={`flex items-center justify-end ${className}`}>
+		{children}
+	</div>
+);
+
+export { Button, Input, InputContainer };
