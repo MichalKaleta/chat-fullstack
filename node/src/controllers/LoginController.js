@@ -1,4 +1,5 @@
 const pool = require("../config/connection");
+const { getEncrypedPassword } = require("../utils/index");
 
 class LoginController {
 	constructor(req, res) {
@@ -6,7 +7,7 @@ class LoginController {
 		this.res = res;
 
 		this.login = req.body.login;
-		this.password = req.body.password;
+		this.password = getEncrypedPassword(req.body.password);
 	}
 
 	getUser = async () => {
@@ -14,10 +15,8 @@ class LoginController {
 			text: "SELECT login, password FROM users WHERE login = $1 AND password = $2",
 			values: [this.login, this.password],
 		};
-
 		const dbResponse = await pool.query(query);
-		console.log(dbResponse.rows[0]);
-		this.res.json(dbResponse.rows[0]);
+		this.res.json({ login: dbResponse.rows[0].login });
 	};
 }
 

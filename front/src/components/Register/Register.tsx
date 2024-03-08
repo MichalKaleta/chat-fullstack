@@ -9,6 +9,7 @@ const Register: ReactComponentElement<any> = (props: any) => {
 	});
 
 	const sendRegisterData = () => {
+		console.log(login, password);
 		axios
 			.post("http://localhost:3000/api/register", {
 				login,
@@ -24,6 +25,7 @@ const Register: ReactComponentElement<any> = (props: any) => {
 			</span>
 			<form>
 				<Input
+					value={login}
 					placeholder="username"
 					type="text"
 					onChange={(e) =>
@@ -35,6 +37,7 @@ const Register: ReactComponentElement<any> = (props: any) => {
 				/>
 
 				<Input
+					value={password}
 					type="password"
 					placeholder="password"
 					onChange={(e) =>
@@ -46,10 +49,7 @@ const Register: ReactComponentElement<any> = (props: any) => {
 				/>
 				<Button
 					//type="undefin"
-					onClick={(e) => {
-						e.preventDefault();
-						sendRegisterData();
-					}}
+					onClick={sendRegisterData}
 				>
 					Register
 				</Button>

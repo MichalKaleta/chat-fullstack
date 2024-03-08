@@ -4,45 +4,38 @@ import { Button, Input } from "../Form/Form";
 const host = "localhost";
 const host2 = "172.18.176.94";
 
-const Login: ReactComponentElement<any> = ({ getGuestFullName }) => {
+const Login: ReactComponentElement<any> = ({ getLogin }) => {
 	const [{ login, password }, setLoginData] = useState({
 		login: "test",
 		password: "password",
 	});
 
-	const [guestName, setGuestName] = useState("Michal");
+	const [guestName, setGuestName] = useState();
 
-	const sendLoginData = () => {
-		axios
-			.post(`http://${host}:3000/api/login`, {
+	const sendLoginData = async () => {
+		try {
+			const { data } = await axios.post(`http://${host}:3000/api/login`, {
 				login,
 				password,
-			})
-			.then((res) => console.log("RESPONSE", res.data))
-			.catch((err) => console.log("ERROR", err));
+			});
+			getLogin(data.login);
+		} catch (err) {
+			console.log("ERROR", err);
+		}
 	};
 	const sendGuestName = async () => {
 		try {
 			const { data } = await axios.post(
 				"http://localhost:3000/api/guest",
-				{
-					guestName,
-				}
+				{ guestName }
 			);
-			console.log(data);
-			getGuestFullName(data.guestName);
-			console.log("RESPONSE", data);
+			getLogin(data.guestName);
 		} catch (err) {
-			console.log("ERROR", err);
+			console.error("ERROR", err);
 		}
 	};
 	/////TEST////////////////
-	useEffect(() => {
-		sendGuestName();
-
-		return () => {};
-	}, []);
-	/////////////////
+	/* 	useEffect(() => {sendGuestName()}, []); */
 
 	return (
 		<div className="mt-4">
@@ -51,6 +44,7 @@ const Login: ReactComponentElement<any> = ({ getGuestFullName }) => {
 			</span>
 			<form>
 				<Input
+					value={login}
 					placeholder="username"
 					type="text"
 					onChange={(e) =>
@@ -62,6 +56,7 @@ const Login: ReactComponentElement<any> = ({ getGuestFullName }) => {
 				/>
 
 				<Input
+					value={password}
 					placeholder="password"
 					type="password"
 					onChange={(e) => {
@@ -72,7 +67,7 @@ const Login: ReactComponentElement<any> = ({ getGuestFullName }) => {
 					}}
 				/>
 				<Button
-					className="flex-none font-mono flex items-center justify-center w-12 h-12 text-black"
+					className="items-center justify-center text-black"
 					type="button"
 					aria-label="Like"
 					onClick={sendLoginData}
@@ -92,9 +87,8 @@ const Login: ReactComponentElement<any> = ({ getGuestFullName }) => {
 				/>
 				<Button
 					value={guestName}
-					className="flex-none font-mono flex items-center justify-center w-12 h-12 text-black"
+					className="items-center justify-center  text-black"
 					type="button"
-					//aria-label="Like"
 					onClick={sendGuestName}
 				></Button>
 			</form>

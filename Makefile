@@ -7,3 +7,4 @@ dnode:
 	cd ./node && docker compse up -d
 db:
 	cd ./node/db && docker composeup -d
+

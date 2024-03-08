@@ -10,7 +10,7 @@ const cors = require("cors");
 
 const app = express();
 app.use(cors());
-console.log(chat);
+
 const serverPort = 3000;
 
 app.use(express.json()); // for parsing application/json
@@ -28,14 +28,13 @@ app.post("/api/login", (req, res) => {
 //GUEST
 app.post("/api/guest", (req, res) => {
 	const guestController = new GuestController(req, res);
-	guestController.sendGuestName(req, res);
+	guestController.sendGuestName();
 });
 
 //REGISTER
 app.post("/api/register", async (req, res) => {
 	const registerController = new RegisterController(req, res);
-
-	registerController.addUser(req, res);
+	registerController.addUser();
 });
 
 app.listen(serverPort, () => {

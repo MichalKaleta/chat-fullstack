@@ -1,4 +1,5 @@
 const pool = require("../config/connection");
+const { getEncrypedPassword } = require("../utils/index");
 
 //TODO
 class RegisterController {
@@ -7,17 +8,18 @@ class RegisterController {
 		this.res = res;
 
 		this.login = req.body.login;
-		this.password = req.body.password;
+
+		this.hashPassword = getEncrypedPassword(req.body.password);
 	}
 
 	addUser = async () => {
 		const query = {
 			text: "INSERT INTO users(login, password) VALUES($1, $2)",
-			values: [this.login, this.password],
+			values: [this.login, this.hashPassword],
 		};
 		const dbResponse = await pool.query(query);
 
-		res.json(dbResponse);
+		this.res.json(dbResponse);
 	};
 }
 

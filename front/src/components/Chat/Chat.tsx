@@ -27,9 +27,9 @@ const Chat = ({ login }) => {
 
 	return (
 		<>
-			"Witaj na czacie {login}"
-			<div className=" chat__container">
-				<ul className="flex flex-col h-96 w-full overflow-hidden bg-slate-200  mt-10 p-4 justify-end w-400 items-end">
+			<div className=" chat__container flex flex-col  justify-center">
+				"Witaj na czacie {login}"
+				<ul className="flex flex-col w-full h-96 overflow-hidden bg-slate-200  mt-10 p-4 justify-end w-400 items-end">
 					{chatMsgs.map(({ message, id, sender }) => (
 						<li
 							className={`${
@@ -57,11 +57,12 @@ const Chat = ({ login }) => {
 				</ul>
 				<InputContainer>
 					<Input
-						className={"mx-0"}
+						className={""}
 						value={message}
 						onChange={(e) => setMessage(e.target.value)}
 					/>
 					<Button
+						className="mr-0"
 						text="Send"
 						onClick={() => message && sendMessage()}
 					/>

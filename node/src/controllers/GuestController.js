@@ -1,5 +1,5 @@
 const pool = require("../config/connection");
-const getRandomInt = require("../utils/index");
+const { getRandomInt } = require("../utils/index");
 
 class GuestController {
 	constructor(req, res) {
