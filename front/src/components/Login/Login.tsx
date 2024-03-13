@@ -1,10 +1,16 @@
 import { useState, useEffect, ReactComponentElement } from "react";
 import axios from "axios";
 import { Button, Input } from "../Form/Form";
-const host = "localhost";
-const host2 = "172.18.176.94";
+import { useQuery } from "react-query";
 
-const Login: ReactComponentElement<any> = ({ getLogin }) => {
+const host = "localhost";
+//const host2 = "172.18.176.94";
+
+type LoginParams = {
+	getLogin: () => string;
+};
+
+const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 	const [{ login, password }, setLoginData] = useState({
 		login: "test",
 		password: "password",
@@ -12,33 +18,48 @@ const Login: ReactComponentElement<any> = ({ getLogin }) => {
 
 	const [guestName, setGuestName] = useState();
 
-	const sendLoginData = async () => {
-		try {
-			const { data } = await axios.post(`http://${host}:3000/api/login`, {
-				login,
-				password,
-			});
-			getLogin(data.login);
-		} catch (err) {
-			console.log("ERROR", err);
-		}
-	};
+	const sendLoginData = async () =>
+		axios.post(`http://${host}:3000/api/login`, {
+			login,
+			password,
+		});
+
 	const sendGuestName = async () => {
-		try {
-			const { data } = await axios.post(
-				"http://localhost:3000/api/guest",
-				{ guestName }
-			);
-			getLogin(data.guestName);
-		} catch (err) {
-			console.error("ERROR", err);
-		}
+		const { data } = await axios.post("http://localhost:3000/api/guest", {
+			guestName,
+		});
 	};
+
+	const {
+		data: guestData,
+		error: guestError,
+		refetch: fetchGuest,
+	} = useQuery("login", sendGuestName, {
+		onSuccess: (res) => getLogin(res.data.login),
+		enabled: false,
+	});
+
+	const {
+		data: authData,
+		error: authError,
+		refetch: fetchAuth,
+	} = useQuery("login", sendLoginData, {
+		onSuccess: (res) => getLogin(res.data.login),
+		enabled: false,
+	});
+
+	console.log(guestError, authError);
+
 	/////TEST////////////////
 	/* 	useEffect(() => {sendGuestName()}, []); */
-
+	const error = guestError || authError || undefined;
 	return (
 		<div className="mt-4">
+			{error && (
+				<div className="bg-red-500 text- text-slate-100 w-96 p-2">
+					<p className="">{error?.response.data}</p>
+				</div>
+			)}
 			<span className="mx-2">
 				--------------------LOGIN-------------------
 			</span>
@@ -70,7 +91,7 @@ const Login: ReactComponentElement<any> = ({ getLogin }) => {
 					className="items-center justify-center text-black"
 					type="button"
 					aria-label="Like"
-					onClick={sendLoginData}
+					onClick={fetchAuth}
 				>
 					Login
 				</Button>
@@ -89,7 +110,7 @@ const Login: ReactComponentElement<any> = ({ getLogin }) => {
 					value={guestName}
 					className="items-center justify-center  text-black"
 					type="button"
-					onClick={sendGuestName}
+					onClick={fetchGuest}
 				></Button>
 			</form>
 		</div>

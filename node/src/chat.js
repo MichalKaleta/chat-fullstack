@@ -1,14 +1,9 @@
-const http = require("node:http");
-const crypto = require("crypto");
-const querystring = require("node:querystring");
-const port = 1337;
 const { WebSocketServer } = require("ws");
-const url = require("node:url");
 const { v4 } = require("uuid");
-
+console.log(process.env.PORT_WS);
 let clients = [];
 const chat = () => {
-	const wsServer = new WebSocketServer({ port });
+	const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
 
 	//INCOMING MESSAGE
 	const messageListener = (ws) => {
@@ -19,7 +14,6 @@ const chat = () => {
 				id: v4(),
 				sender: login,
 			});
-
 			clients.forEach((client) => {
 				client.send(responseData);
 			});

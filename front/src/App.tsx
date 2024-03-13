@@ -11,6 +11,7 @@ interface UsersType {
 
 function App() {
 	const [login, setLogin] = useState("");
+	console.log(login);
 	return (
 		<div className="fle flex-co min-w-auto font-mono px-10">
 			{(!login && (
@@ -18,6 +19,7 @@ function App() {
 					<Register />
 					<Login
 						getLogin={(login: string) => {
+							console.log("asdfasdfadf", login);
 							setLogin(login);
 						}}
 					/>

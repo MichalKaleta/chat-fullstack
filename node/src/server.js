@@ -1,42 +1,34 @@
-//const EventEmitter = require("node:events");
 const path = require("node:path");
 const pool = require("./config/connection");
 const express = require("express");
-const LoginController = require("./controllers/LoginController");
-const RegisterController = require("./controllers/RegiterController");
-const GuestController = require("./controllers/GuestController");
 const chat = require("./chat");
 const cors = require("cors");
+const router = require("./router/router");
+const BaseError = require("./utils/BaseError");
+//const { log } = require("node:console");
 
 const app = express();
-app.use(cors());
 
-const serverPort = 3000;
+global.log = () => null;
+
+if (process.env.ENV === "devlopment") {
+	log = (msg) => console.log(`\x1b[33m ${msg}\x1b[0m`);
+	app.use(cors());
+}
+
+const errorHandler = (err, req, res, next) => {
+	//log(typeof err);
+	log("POTĘŻNYERROR HANDLER:");
+	log(JSON.stringify(err));
+	res.status(401).send(err.message);
+};
 
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-//CHAT
 chat();
-
-//LOGIN
-app.post("/api/login", (req, res) => {
-	const loginController = new LoginController(req, res);
-	loginController.getUser();
-});
-
-//GUEST
-app.post("/api/guest", (req, res) => {
-	const guestController = new GuestController(req, res);
-	guestController.sendGuestName();
-});
-
-//REGISTER
-app.post("/api/register", async (req, res) => {
-	const registerController = new RegisterController(req, res);
-	registerController.addUser();
-});
-
-app.listen(serverPort, () => {
-	console.log(`Example app listening on port ${serverPort}`);
+app.use(router);
+app.use(errorHandler);
+app.listen(process.env.PORT_APP, () => {
+	console.log(`Listening on port ${process.env.PORT_APP}`);
 });
