@@ -1,0 +1,128 @@
+{
+	"users": [
+		{
+			"login": "Alice",
+			"password": "password123"
+		},
+		{
+			"login": "Bob",
+			"password": "securepass456"
+		},
+		{
+			"login": "Charlie",
+			"password": "mysecretword789"
+		},
+		{
+			"login": "David",
+			"password": "strongpassword!@#"
+		},
+		{
+			"login": "Eve",
+			"password": "eveiscool"
+		},
+		{
+			"login": "Frank",
+			"password": "frank1234"
+		},
+		{
+			"login": "Grace",
+			"password": "gracefulpass"
+		},
+		{
+			"login": "Harry",
+			"password": "harrypotter"
+		},
+		{
+			"login": "Isabel",
+			"password": "isabel123"
+		},
+		{
+			"login": "Jack",
+			"password": "jackiscool"
+		},
+		{
+			"login": "Katie",
+			"password": "katiepass"
+		},
+		{
+			"login": "Liam",
+			"password": "liamrocks"
+		},
+		{
+			"login": "Megan",
+			"password": "meganpassword"
+		},
+		{
+			"login": "Nathan",
+			"password": "nathan123"
+		},
+		{
+			"login": "Olivia",
+			"password": "olivia789"
+		},
+		{
+			"login": "Peter",
+			"password": "peterpass"
+		},
+		{
+			"login": "Quinn",
+			"password": "quinnpassword"
+		},
+		{
+			"login": "Rachel",
+			"password": "rachel123"
+		},
+		{
+			"login": "Sam",
+			"password": "sampass"
+		},
+		{
+			"login": "Tina",
+			"password": "tinapassword"
+		},
+		{
+			"login": "Ursula",
+			"password": "ursulapass"
+		},
+		{
+			"login": "Victor",
+			"password": "victor1234"
+		},
+		{
+			"login": "Wendy",
+			"password": "wendypass"
+		},
+		{
+			"login": "Xavier",
+			"password": "xavierpassword"
+		},
+		{
+			"login": "Yvonne",
+			"password": "yvonnepass"
+		},
+		{
+			"login": "Zack",
+			"password": "zackiscool"
+		},
+		{
+			"login": "Emily",
+			"password": "emilypassword"
+		},
+		{
+			"login": "Jacob",
+			"password": "jacob123"
+		},
+		{
+			"login": "Sophia",
+			"password": "sophiapass"
+		},
+		{
+			"login": "Matthew",
+			"password": "matthew456"
+		},
+		{
+			"login": "Ava",
+			"password": "avapassword"
+		}
+	]
+}

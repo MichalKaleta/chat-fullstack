@@ -1,6 +1,6 @@
 const pool = require("../config/connection");
-const { getEncrypedPassword } = require("../utils/index");
-const BaseError = require("../utils/BaseError");
+const { getEncrypedPassword, salt } = require("../utils/index");
+const jwt = require("jsonwebtoken");
 
 class LoginController {
 	constructor(req, res, next) {
@@ -9,12 +9,15 @@ class LoginController {
 		this.login = req.body.login;
 		this.password = getEncrypedPassword(req.body.password);
 		this.next = next;
+		this.id = null;
 	}
 
-	getUser = async () => {
+	static getUserData = () => this.id;
+
+	loginUser = async () => {
 		try {
 			const query = {
-				text: "SELECT login, password FROM users WHERE login = $1 AND password = $2",
+				text: "SELECT * FROM users WHERE login = $1 AND password = $2",
 				values: [this.login, this.password],
 			};
 			const dbResponse = await pool.query(query);
@@ -23,7 +26,15 @@ class LoginController {
 				throw new Error("wrong user or password");
 			}
 			const login = dbResponse.rows[0].login;
-			this.res.json({ login });
+			const id = dbResponse.rows[0].id;
+			this.id = id;
+			//	console.log(this.id, login);
+
+			const token = jwt.sign({ id, login }, salt, {
+				expiresIn: "2h",
+			});
+
+			this.res.json({ login, token });
 		} catch (err) {
 			this.next(err);
 		}

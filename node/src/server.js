@@ -1,11 +1,9 @@
 const path = require("node:path");
 const pool = require("./config/connection");
 const express = require("express");
-const chat = require("./chat");
 const cors = require("cors");
 const router = require("./router/router");
-const BaseError = require("./utils/BaseError");
-//const { log } = require("node:console");
+const verifyToken = require("./middleware/jwtAuthorization");
 
 const app = express();
 
@@ -20,13 +18,13 @@ const errorHandler = (err, req, res, next) => {
 	//log(typeof err);
 	log("POTĘŻNYERROR HANDLER:");
 	log(JSON.stringify(err));
+	log(err);
 	res.status(401).send(err.message);
 };
 
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-chat();
 app.use(router);
 app.use(errorHandler);
 app.listen(process.env.PORT_APP, () => {

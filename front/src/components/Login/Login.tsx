@@ -12,7 +12,7 @@ type LoginParams = {
 
 const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 	const [{ login, password }, setLoginData] = useState({
-		login: "test",
+		login: "dude",
 		password: "password",
 	});
 
@@ -24,18 +24,25 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 			password,
 		});
 
-	const sendGuestName = async () => {
-		const { data } = await axios.post("http://localhost:3000/api/guest", {
+	const sendGuestName = async () =>
+		axios.post("http://localhost:3000/api/guest", {
 			guestName,
 		});
-	};
 
 	const {
 		data: guestData,
 		error: guestError,
 		refetch: fetchGuest,
 	} = useQuery("login", sendGuestName, {
-		onSuccess: (res) => getLogin(res.data.login),
+		onSuccess: (res) => {
+			//axios.defaults.baseURL = 'http://localhost:1010/'
+			const login = res.data.login;
+			const token = res.data.token;
+			axios.defaults.headers.common = {
+				Authorization: `bearer ${token}`,
+			};
+			axios.get("/api/chat").then((res) => getLogin(login));
+		},
 		enabled: false,
 	});
 
@@ -49,9 +56,10 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 	});
 
 	console.log(guestError, authError);
-
-	/////TEST////////////////
-	/* 	useEffect(() => {sendGuestName()}, []); */
+	/* 
+	useEffect(() => {
+		sendLoginData();
+	}, []);  */ /////TEST////////////////
 	const error = guestError || authError || undefined;
 	return (
 		<div className="mt-4">
@@ -101,6 +109,7 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 				<Input
 					value={guestName}
 					placeholder="guest name"
+					getDecryptedString
 					type="text"
 					onChange={(e) => {
 						setGuestName(e.target.value);
@@ -116,4 +125,5 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 		</div>
 	);
 };
+
 export default Login;

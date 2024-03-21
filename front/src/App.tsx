@@ -2,6 +2,7 @@ import { useState } from "react";
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import Chat from "./components/Chat/Chat";
+import SearchUsers from "./components/SearchUsers/SearchUsers";
 
 interface UsersType {
 	id: number;
@@ -24,7 +25,12 @@ function App() {
 						}}
 					/>
 				</>
-			)) || <Chat login={login} />}
+			)) || (
+				<>
+					<SearchUsers />
+					<Chat login={login} />
+				</>
+			)}
 		</div>
 	);
 }
