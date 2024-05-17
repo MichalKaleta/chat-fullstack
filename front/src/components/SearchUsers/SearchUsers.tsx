@@ -1,12 +1,17 @@
-import { useState, useEffect, ReactComponentElement } from "react";
+import { useState, useEffect, FC } from "react";
 import { Button, Input } from "../Form/Form";
 import axios from "axios";
 
-const SearchUser: ReactComponentElement<any> = (props: any) => {
-	const [searchUser, setSearchUser] = useState("");
-	const [usersList, setUsersList] = useState([]);
+type UserListType = {
+	login: string;
+	id: string;
+};
 
-	const addToFriends = async (id) => {
+const SearchUser: FC = () => {
+	const [searchUser, setSearchUser] = useState<string[]>();
+	const [usersList, setUsersList] = useState<UserListType[]>([]);
+
+	async function addToFriends(id: string): Promise<void> {
 		try {
 			const usersList = await axios.post(
 				"http://localhost:3000/api/addFriend",
@@ -14,13 +19,12 @@ const SearchUser: ReactComponentElement<any> = (props: any) => {
 					id,
 				}
 			);
-			setUsersList(usersList);
 		} catch (err) {
 			throw err;
 		}
-	};
+	}
 
-	const sendSearchUserData = async () => {
+	async function sendSearchUserData(): Promise<void> {
 		try {
 			const res = await axios.get("http://localhost:3000/api/search", {
 				params: {
@@ -32,7 +36,7 @@ const SearchUser: ReactComponentElement<any> = (props: any) => {
 		} catch (err) {
 			throw err;
 		}
-	};
+	}
 
 	return (
 		<div className="mt-4">

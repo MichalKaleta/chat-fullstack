@@ -16,17 +16,15 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 		password: "password",
 	});
 
-	const [guestName, setGuestName] = useState();
+	const sendGuestName = async () =>
+		axios.post("http://localhost:3000/api/guest", {
+			guestName,
+		});
 
 	const sendLoginData = async () =>
 		axios.post(`http://${host}:3000/api/login`, {
 			login,
 			password,
-		});
-
-	const sendGuestName = async () =>
-		axios.post("http://localhost:3000/api/guest", {
-			guestName,
 		});
 
 	const {
@@ -55,22 +53,14 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 		enabled: false,
 	});
 
-	console.log(guestError, authError);
-	/* 
-	useEffect(() => {
-		sendLoginData();
-	}, []);  */ /////TEST////////////////
 	const error = guestError || authError || undefined;
 	return (
-		<div className="mt-4">
+		<div className="my-4">
 			{error && (
 				<div className="bg-red-500 text- text-slate-100 w-96 p-2">
 					<p className="">{error?.response.data}</p>
 				</div>
 			)}
-			<span className="mx-2">
-				--------------------LOGIN-------------------
-			</span>
 			<form>
 				<Input
 					value={login}
@@ -103,24 +93,6 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 				>
 					Login
 				</Button>
-			</form>
-			--------------OR--CHAT--AS--GUEST-----------
-			<form>
-				<Input
-					value={guestName}
-					placeholder="guest name"
-					getDecryptedString
-					type="text"
-					onChange={(e) => {
-						setGuestName(e.target.value);
-					}}
-				/>
-				<Button
-					value={guestName}
-					className="items-center justify-center  text-black"
-					type="button"
-					onClick={fetchGuest}
-				></Button>
 			</form>
 		</div>
 	);

@@ -1,36 +1,36 @@
-import { useState, useEffect, ReactComponentElement } from "react";
-import { Button, Input } from "../Form/Form";
+import { useState, useEffect, FC } from "react";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 import axios from "axios";
+import { Button, Input } from "../Form/Form";
+import "./Register.scss";
 
-const Register: ReactComponentElement<any> = (props: any) => {
-	const [{ login, password }, setRegisterData] = useState({
-		login: "dude",
+const Register: FC<null> = () => {
+	const [{ email, password }, setRegisterData] = useState({
+		email: "dude",
 		password: "password",
 	});
 
-	const sendRegisterData = () => {
-		console.log(login, password);
+	async function sendRegisterData(): Promise<void> {
+		console.log(email, password);
 		axios
 			.post("http://localhost:3000/api/register", {
-				login,
+				email,
 				password,
 			})
 			.then((res) => console.log(res));
-	};
+	}
 
 	return (
-		<div className="mt-4">
-			<span className="mx-2">
-				------------------REGISTER-----------------
-			</span>
+		<div className="my-4">
 			<form>
 				<Input
-					value={login}
-					placeholder="username"
-					type="text"
+					value={email}
+					placeholder="email"
+					type="email"
 					onChange={(e) =>
 						setRegisterData((state) => ({
-							login: state.login,
+							email: state.email,
 							password: e.target.value,
 						}))
 					}
@@ -42,17 +42,12 @@ const Register: ReactComponentElement<any> = (props: any) => {
 					placeholder="password"
 					onChange={(e) =>
 						setRegisterData((state) => ({
-							login: e.target.value,
+							email: e.target.value,
 							password: state.password,
 						}))
 					}
 				/>
-				<Button
-					//type="undefin"
-					onClick={sendRegisterData}
-				>
-					Register
-				</Button>
+				<Button text="Submit" onClick={sendRegisterData} />
 			</form>
 		</div>
 	);

@@ -17,7 +17,7 @@ class FriendController {
 
 		try {
 			const query = {
-				text: "INSERT INTO users friends VALUES $2 WHERE id = $1",
+				text: "INSERT INTO users (friends) VALUES $2 WHERE id = $1",
 				values: [this.loggedUser, this.friendId],
 			};
 			const dbResponse = await pool.query(query);

@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, FC } from "react";
 import { Input, Button, InputContainer } from "../Form/Form";
 
 const wsUri = "ws://localhost:1337";
 //const wsUri = "ws://172.18.176.94::1337";
 
-const Chat = ({ login }) => {
-	const [message, setMessage] = useState(" ");
-	const [chatMsgs, setChatMsgs] = useState([]);
-	const [socket, setSocket] = useState(null);
+type chatMsgsType = {
+	message: string;
+	id: string;
+	sender: string;
+};
+
+const Chat: FC<{ login: string }> = ({ login = "" }) => {
+	const [message, setMessage] = useState("");
+	const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
+	const [socket, setSocket] = useState<WebSocket | null>(null);
 	const wsUrl = encodeURI(`${wsUri}/?user=${login}`);
 
 	useEffect(() => {
@@ -37,15 +43,7 @@ const Chat = ({ login }) => {
 									"self-start bg-yellow-500") ||
 								"bg-sky-300"
 							}   
-                                max-w-80
-                                border-r-4  
-                                border-b-4
-                                border-l-2 
-                                border-t-2 
-                                border-black  
-                                rounded-xl
-                                text-xl
-                                p-2 my-1`}
+                                max-w-80 border-r-4 border-b-4 border-l-2 border-t-2 border-black rounded-xl text-xl p-2 my-1`}
 							key={id}
 						>
 							<div className="text-xs .ease-linear  duration-75">
@@ -57,7 +55,6 @@ const Chat = ({ login }) => {
 				</ul>
 				<InputContainer>
 					<Input
-						className={""}
 						value={message}
 						onChange={(e) => setMessage(e.target.value)}
 					/>

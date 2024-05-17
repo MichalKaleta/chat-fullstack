@@ -1,13 +1,24 @@
-import React from "react";
+import { HTMLInputTypeAttribute } from "react";
 
-function Button({ onClick = () => null, text = "Submit", className = "" }) {
+type ButtonProps = {
+	className?: string;
+	text?: string | number;
+	onClick?: (...args: any | undefined) => any | Promise<void> | void;
+	children: string | JSX.Element | JSX.Element[];
+};
+function Button({
+	onClick,
+	text = "Submit",
+	className = "",
+	children,
+}: ButtonProps) {
 	return (
 		<>
 			<button
 				className={`bg-black mx-2 mt-2 rounded-md h-11 ${className}`}
 				onClick={(e) => {
 					e.preventDefault();
-					onClick();
+					onClick && onClick(e);
 				}}
 			>
 				<span
@@ -19,12 +30,22 @@ function Button({ onClick = () => null, text = "Submit", className = "" }) {
                         active:translate-x-0 active:translate-y-0 
                         rounded-md transition-all h-11`}
 				>
-					{text}
+					{text || children}
 				</span>
 			</button>
 		</>
 	);
 }
+
+type InputProps = {
+	className?: string;
+	label?: string;
+	onChange?: (...args: any | undefined) => any | void;
+	name?: string;
+	type?: HTMLInputTypeAttribute;
+	value?: any;
+	placeholder?: string | number | undefined;
+};
 
 function Input({
 	placeholder = "",
@@ -34,13 +55,13 @@ function Input({
 	value = "",
 	onChange,
 	className,
-}) {
+}: InputProps) {
 	return (
 		<>
 			{label && <label htmlFor={name || label || ""}>{label}</label>}
 			<input
 				value={value}
-				name={name || label || ""}
+				name={name || label}
 				type={type}
 				className={`w-96 border-black border-2 p-2.5 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] rounded-md m-2 ${className}`}
 				placeholder={placeholder}
@@ -50,7 +71,12 @@ function Input({
 	);
 }
 
-const InputContainer = ({ className, children }) => (
+type InputContainerProps = {
+	className?: string;
+	children: string | JSX.Element | JSX.Element[];
+};
+
+const InputContainer = ({ className, children }: InputContainerProps) => (
 	<div className={`flex items-center justify-end ${className}`}>
 		{children}
 	</div>

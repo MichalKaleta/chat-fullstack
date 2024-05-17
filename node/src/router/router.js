@@ -39,8 +39,9 @@ router.post("/api/guest", (req, res) => {
 
 //REGISTER
 router.post("/api/register", async (req, res) => {
+	console.log("fd");
 	const registerController = new RegisterController(req, res);
-	registerController.addUser();
+	registerController.sendMail();
 });
 //CHAT
 
