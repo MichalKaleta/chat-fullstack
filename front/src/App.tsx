@@ -7,6 +7,7 @@ import SearchUsers from "./components/SearchUsers/SearchUsers";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import "./App.scss";
 
 interface UsersType {
 	id: number;
@@ -18,17 +19,17 @@ function App() {
 	const [login, setLogin] = useState("");
 	const [value, setValue] = useState(0);
 
-	const handleChange = (event, newValue) => {
-		setValue(newValue);
-	};
-
 	console.log(login);
 	return (
 		<div className="fle flex-co min-w-auto font-mono px-10">
 			{(!login && (
 				<>
 					<Box>
-						<Tabs value={value} onChange={handleChange}>
+						<Tabs
+							className="header__tabs"
+							value={value}
+							onChange={(e, value) => setValue(value)}
+						>
 							{["Login", "REGISTER", "GUESTR"].map((name) => (
 								<Tab label={name} />
 							))}

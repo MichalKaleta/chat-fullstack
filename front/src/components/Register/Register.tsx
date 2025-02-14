@@ -47,6 +47,7 @@ const Register: FC<null> = () => {
 						}))
 					}
 				/>
+                
 				<Button text="Submit" onClick={sendRegisterData} />
 			</form>
 		</div>
