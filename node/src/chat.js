@@ -1,5 +1,31 @@
 const { WebSocketServer } = require("ws");
 const { v4 } = require("uuid");
+//import OpenAI from "openai";
+const getDeep = async () => {
+	let res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${process.env.DEEPSEEK_KEY}`,
+			"HTTP-Referer": "http://localhost:3000", // Optional. Site URL for rankings on openrouter.ai.
+			"X-Title": "chat michau-michau", // Optional. Site title for rankings on openrouter.ai.
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			model: "deepseek/deepseek-r1:free",
+			messages: [{ role: "user", content: "What is the meaning of life?" }],
+			top_p: 1,
+			temperature: 0.685116487331014,
+			repetition_penalty: 1,
+		}),
+	});
+	//console.log(res);
+	const a = await res.json();
+	return a;
+};
+
+getDeep()
+	.then((res) => console.log("FASDFADF"))
+	.catch((err) => console.log("ERROR", err));
 
 let clients = [];
 const chat = async () => {
