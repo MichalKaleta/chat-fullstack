@@ -2,7 +2,6 @@ import { useEffect, useState, FC } from "react";
 import { Input, Button, InputContainer } from "../Form/Form";
 
 const wsUri = "ws://localhost:1337";
-//const wsUri = "ws://172.18.176.94::1337";
 
 type chatMsgsType = {
 	message: string;
@@ -39,25 +38,18 @@ const Chat: FC<{ login: string }> = ({ login = "" }) => {
 					{chatMsgs.map(({ message, id, sender }) => (
 						<li
 							className={`${
-								(sender != login &&
-									"self-start bg-yellow-500") ||
-								"bg-sky-300"
+								(sender != login && "self-start bg-yellow-500") || "bg-sky-300"
 							}   
                                 max-w-80 border-r-4 border-b-4 border-l-2 border-t-2 border-black rounded-xl text-xl p-2 my-1`}
 							key={id}
 						>
-							<div className="text-xs .ease-linear  duration-75">
-								{sender}
-							</div>
+							<div className="text-xs .ease-linear  duration-75">{sender}</div>
 							<div>{message}</div>
 						</li>
 					))}
 				</ul>
 				<InputContainer>
-					<Input
-						value={message}
-						onChange={(e) => setMessage(e.target.value)}
-					/>
+					<Input value={message} onChange={(e) => setMessage(e.target.value)} />
 					<Button
 						className="mr-0"
 						text="Send"
