@@ -23,7 +23,7 @@ export default function Guest() {
 			axios.defaults.headers.common = {
 				Authorization: `bearer ${token}`,
 			};
-			axios.get("/api/chat").then((res) => getLogin(login));
+			axios.get("/api/chat").then(() => getLogin(login));
 		},
 		enabled: false,
 	});

@@ -3,8 +3,8 @@ import { HTMLInputTypeAttribute } from "react";
 type ButtonProps = {
 	className?: string;
 	text?: string | number;
-	onClick?: (...args: any | undefined) => any | Promise<void> | void;
-	children: string | JSX.Element | JSX.Element[];
+	onClick?: (...args: unknown[]) => unknown | Promise<void> | void;
+	children?: string | JSX.Element | JSX.Element[];
 };
 function Button({
 	onClick,
@@ -40,11 +40,11 @@ function Button({
 type InputProps = {
 	className?: string;
 	label?: string;
-	onChange?: (...args: any | undefined) => any | void;
+	onChange?: (...args: unknown[]) => void;
 	name?: string;
 	type?: HTMLInputTypeAttribute;
-	value?: any;
-	placeholder?: string | number | undefined;
+	value?: string;
+	placeholder?: string | undefined;
 };
 
 function Input({
@@ -77,9 +77,7 @@ type InputContainerProps = {
 };
 
 const InputContainer = ({ className, children }: InputContainerProps) => (
-	<div className={`flex items-center justify-end ${className}`}>
-		{children}
-	</div>
+	<div className={`flex items-center justify-end ${className}`}>{children}</div>
 );
 
 export { Button, Input, InputContainer };

@@ -1,13 +1,7 @@
 import { useEffect, useState, FC } from "react";
 import { Input, Button, InputContainer } from "../Form/Form";
-
 const wsUri = "ws://localhost:1337";
-
-type chatMsgsType = {
-	message: string;
-	id: string;
-	sender: string;
-};
+import { chatMsgsType } from "../../types/index";
 
 const Chat: FC<{ login: string }> = ({ login = "" }) => {
 	const [message, setMessage] = useState("");

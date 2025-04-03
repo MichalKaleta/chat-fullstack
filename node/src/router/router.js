@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const OpenAI = require("openai");
 const verifyToken = require("../middleware/jwtAuthorization");
 const LoginController = require("../controllers/LoginController");
 const RegisterController = require("../controllers/RegiterController");
 const GuestController = require("../controllers/GuestController");
 const SearchController = require("../controllers/SearchController");
 const FriendController = require("../controllers/FriendController");
-const chat = require("../chat");
+const chatWithAi = require("../chat");
 ///const BaseError = require("../utils/Error");
 
 //LOGIN
@@ -46,24 +45,11 @@ router.post("/api/register", async (req, res) => {
 });
 //CHAT
 
-chat();
+chatWithAi();
 router.get("/api/chat", verifyToken, async (req, res) => {
 	res.send({ ok: "ok" });
 });
 
-const openAi = new OpenAI({
-	apiKey: process.env.GEMINI,
-	baseURL: "https://openrouter.ai/api/v1",
-});
-async function main() {
-	const res = await openAi.chat.completions.create({
-		messages: [{ role: "user", content: "Say this is a test" }],
-		model: "google/gemini-2.0-flash-lite-preview-02-05:free",
-	});
-	console.log("res:");
-	console.log(res.choices[0].message.content);
-}
-main();
 router.get("/deep", async (req, res) => {});
 
 /* const getDeep = async () => {

@@ -1,25 +1,23 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import Chat from "./components/Chat/Chat";
 import Guest from "./components/Guest/Guest";
-import SearchUsers from "./components/SearchUsers/SearchUsers";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import "./App.scss";
 
-interface UsersType {
+/* interface UsersType {
 	id: number;
 	login: string;
 	password: string;
-}
+} */
 
 function App() {
 	const [login, setLogin] = useState("");
 	const [value, setValue] = useState(0);
 
-	console.log(login);
 	return (
 		<div className="fle flex-co min-w-auto font-mono px-10">
 			{(!login && (
@@ -43,7 +41,6 @@ function App() {
 				</>
 			)) || (
 				<>
-					<SearchUsers />
 					<Chat login={login} />
 				</>
 			)}

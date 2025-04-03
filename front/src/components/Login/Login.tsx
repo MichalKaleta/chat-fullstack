@@ -6,22 +6,22 @@ import { useQuery } from "react-query";
 const host = "localhost";
 //const host2 = "172.18.176.94";
 
-type LoginParams = {
-	getLogin: () => string;
+type LoginPropsType = {
+	getLogin: (login: string) => void;
 };
 
-const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
+const Login: React.FC<LoginPropsType> = ({ getLogin }) => {
 	const [{ login, password }, setLoginData] = useState({
 		login: "dude",
 		password: "password",
 	});
 
-	const sendGuestName = async () =>
+	const sendGuestData = async () =>
 		axios.post("http://localhost:3000/api/guest", {
 			guestName,
 		});
 
-	const sendLoginData = async () =>
+	const sendUserData = async () =>
 		axios.post(`http://${host}:3000/api/login`, {
 			login,
 			password,
@@ -31,11 +31,10 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 		data: guestData,
 		error: guestError,
 		refetch: fetchGuest,
-	} = useQuery("login", sendGuestName, {
+	} = useQuery("login", sendGuestData, {
 		onSuccess: (res) => {
 			//axios.defaults.baseURL = 'http://localhost:1010/'
-			const login = res.data.login;
-			const token = res.data.token;
+			const { login, token } = res.data;
 			axios.defaults.headers.common = {
 				Authorization: `bearer ${token}`,
 			};
@@ -48,7 +47,7 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 		data: authData,
 		error: authError,
 		refetch: fetchAuth,
-	} = useQuery("login", sendLoginData, {
+	} = useQuery("login", sendUserData, {
 		onSuccess: (res) => getLogin(res.data.login),
 		enabled: false,
 	});
