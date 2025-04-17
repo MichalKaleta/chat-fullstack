@@ -1,11 +1,13 @@
 import { HTMLInputTypeAttribute } from "react";
 
 type ButtonProps = {
+	value?: string;
 	className?: string;
 	text?: string | number;
-	onClick?: (...args: any | undefined) => any | Promise<void> | void;
-	children: string | JSX.Element | JSX.Element[];
+	onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+	children?: React.ReactNode;
 };
+
 function Button({
 	onClick,
 	text = "Submit",
@@ -40,11 +42,11 @@ function Button({
 type InputProps = {
 	className?: string;
 	label?: string;
-	onChange?: (...args: any | undefined) => any | void;
+	onChange?: React.ChangeEventHandler<HTMLInputElement>;
 	name?: string;
 	type?: HTMLInputTypeAttribute;
-	value?: any;
-	placeholder?: string | number | undefined;
+	value?: string | number;
+	placeholder?: string;
 };
 
 function Input({
@@ -77,9 +79,7 @@ type InputContainerProps = {
 };
 
 const InputContainer = ({ className, children }: InputContainerProps) => (
-	<div className={`flex items-center justify-end ${className}`}>
-		{children}
-	</div>
+	<div className={`flex items-center justify-end ${className}`}>{children}</div>
 );
 
 export { Button, Input, InputContainer };

@@ -285,3 +285,4 @@
 **/yarn/install-state.gz
 **/pnp.*
 node/.env.development
+.vercel

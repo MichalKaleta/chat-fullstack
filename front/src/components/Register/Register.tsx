@@ -1,11 +1,10 @@
-import { useState, useEffect, FC } from "react";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
+import { useState, FC } from "react";
+
 import axios from "axios";
 import { Button, Input } from "../Form/Form";
 import "./Register.scss";
 
-const Register: FC<null> = () => {
+const Register: FC = () => {
 	const [{ email, password }, setRegisterData] = useState({
 		email: "dude",
 		password: "password",
@@ -47,8 +46,8 @@ const Register: FC<null> = () => {
 						}))
 					}
 				/>
-                
-				<Button text="Submit" onClick={sendRegisterData} />
+
+				<Button onClick={sendRegisterData}>Submit</Button>
 			</form>
 		</div>
 	);

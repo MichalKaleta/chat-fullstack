@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const OpenAI = require("openai");
+
 const verifyToken = require("../middleware/jwtAuthorization");
 const LoginController = require("../controllers/LoginController");
 const RegisterController = require("../controllers/RegiterController");
@@ -51,48 +51,4 @@ router.get("/api/chat", verifyToken, async (req, res) => {
 	res.send({ ok: "ok" });
 });
 
-const openAi = new OpenAI({
-	apiKey: process.env.GEMINI,
-	baseURL: "https://openrouter.ai/api/v1",
-});
-async function main() {
-	const res = await openAi.chat.completions.create({
-		messages: [{ role: "user", content: "Say this is a test" }],
-		model: "google/gemini-2.0-flash-lite-preview-02-05:free",
-	});
-	console.log("res:");
-	console.log(res.choices[0].message.content);
-}
-main();
-router.get("/deep", async (req, res) => {});
-
-/* const getDeep = async () => {
-	let res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-		method: "POST",
-		headers: {
-			Authorization: `Bearer ${process.env.DEEPSEEK_KEY}`,
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			model: "deepseek/deepseek-r1:free",
-			messages: [{ role: "user", content: "What is the meaning of life?" }],
-			top_p: 1,
-			temperature: 0.685116487331014,
-			repetition_penalty: 1,
-		}),
-	});
-	console.log(res);
-	if (res.ok) {
-		console.log("OK", res);
-		return res;
-	}
-};
-
-getDeep()
-	.then((res) => {
-		console.log(res);
-		console.log("fdfdf");
-	})
-	.catch((err) => console.log("ERROR", err));
- */
 module.exports = router;

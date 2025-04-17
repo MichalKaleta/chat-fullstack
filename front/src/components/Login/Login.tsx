@@ -1,19 +1,21 @@
-import { useState, useEffect, ReactComponentElement } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Button, Input } from "../Form/Form";
 import { useQuery } from "react-query";
+import { AxiosError } from "axios";
 
 const host = "localhost";
 //const host2 = "172.18.176.94";
 
 type LoginParams = {
-	getLogin: () => string;
+	getLogin: (login: string) => void;
 };
 
-const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
-	const [{ login, password }, setLoginData] = useState({
+const Login: React.FC<LoginParams> = ({ getLogin }) => {
+	const [{ login, password, guestName = "" }, setLoginData] = useState({
 		login: "dude",
 		password: "password",
+		guestName: "",
 	});
 
 	const sendGuestName = async () =>
@@ -31,7 +33,10 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 		data: guestData,
 		error: guestError,
 		refetch: fetchGuest,
-	} = useQuery("login", sendGuestName, {
+	} = useQuery<
+		{ data: { login: string; token: string } },
+		AxiosError<{ data: string }>
+	>("login", sendGuestName, {
 		onSuccess: (res) => {
 			//axios.defaults.baseURL = 'http://localhost:1010/'
 			const login = res.data.login;
@@ -39,26 +44,36 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 			axios.defaults.headers.common = {
 				Authorization: `bearer ${token}`,
 			};
-			axios.get("/api/chat").then((res) => getLogin(login));
+			axios.get("/api/chat").then(() => getLogin(login));
 		},
 		enabled: false,
 	});
+	console.log(guestData, fetchGuest);
 
 	const {
-		data: authData,
+		data,
 		error: authError,
 		refetch: fetchAuth,
-	} = useQuery("login", sendLoginData, {
-		onSuccess: (res) => getLogin(res.data.login),
-		enabled: false,
-	});
+	} = useQuery<{ data: { login: string } }, AxiosError<{ data: string }>>(
+		"login",
+		sendLoginData,
+		{
+			onSuccess: (res) => getLogin(res.data.login),
+			enabled: false,
+		}
+	);
+	console.log(data);
 
 	const error = guestError || authError || undefined;
 	return (
 		<div className="my-4">
 			{error && (
 				<div className="bg-red-500 text- text-slate-100 w-96 p-2">
-					<p className="">{error?.response.data}</p>
+					<p className="">
+						{typeof error.response?.data === "string"
+							? error.response.data
+							: "An error occurred"}
+					</p>
 				</div>
 			)}
 			<form>
@@ -70,6 +85,7 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 						setLoginData((state) => ({
 							login: e.target.value,
 							password: state.password,
+							guestName: state.guestName,
 						}))
 					}
 				/>
@@ -82,14 +98,14 @@ const Login: ReactComponentElement<LoginParams> = ({ getLogin }) => {
 						setLoginData((state) => ({
 							login: state.login,
 							password: e.target.value,
+							guestName: state.guestName,
 						}));
 					}}
 				/>
 				<Button
 					className="items-center justify-center text-black"
-					type="button"
 					aria-label="Like"
-					onClick={fetchAuth}
+					onClick={() => fetchAuth()}
 				>
 					Login
 				</Button>

@@ -7,7 +7,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
-function logErrorToService(error, info) {
+function logErrorToService(error: Error, info: string) {
 	// Use your preferred error logging service
 	console.error("Caught an error:", error, info);
 }

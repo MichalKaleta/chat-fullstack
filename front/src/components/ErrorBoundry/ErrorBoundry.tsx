@@ -1,8 +1,19 @@
 import React from "react";
 
-//TODO
-class ErrorBoundary extends React.Component {
-	constructor(props) {
+interface ErrorBoundaryProps {
+	children: React.ReactNode;
+	onError?: (error: Error, info: string) => void;
+}
+
+interface ErrorBoundaryState {
+	hasError: boolean;
+}
+
+class ErrorBoundary extends React.Component<
+	ErrorBoundaryProps,
+	ErrorBoundaryState
+> {
+	constructor(props: ErrorBoundaryProps) {
 		super(props);
 		this.state = { hasError: false };
 	}
@@ -12,9 +23,12 @@ class ErrorBoundary extends React.Component {
 		//	return { hasError: true };
 	}
  */
-	componentDidCatch(error, errorInfo) {
-		//logErrorToMyService(error, errorInfo);
-		console.log("ERROR BOUNDRY!!!!!!!!:  ", error);
+	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+		this.props.onError?.(
+			error,
+			errorInfo.componentStack || "No component stack available"
+		);
+		console.log("ERROR BOUNDARY: ", error);
 	}
 
 	render() {
