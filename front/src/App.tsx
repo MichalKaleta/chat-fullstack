@@ -10,37 +10,37 @@ import Box from "@mui/material/Box";
 import "./App.scss";
 
 function App() {
-	const [login, setLogin] = useState("");
-	const [value, setValue] = useState(0);
+  const [login, setLogin] = useState("");
+  const [value, setValue] = useState(0);
 
-	console.log(login);
-	return (
-		<div className="fle flex-co min-w-auto font-mono px-10">
-			{(!login && (
-				<>
-					<Box>
-						<Tabs
-							className="header__tabs"
-							value={value}
-							onChange={(_, value) => setValue(value)}
-						>
-							{["Login", "REGISTER", "GUESTR"].map((name) => (
-								<Tab label={name} />
-							))}
-						</Tabs>
-					</Box>
-					{value === 0 &&
-						(() => <Login getLogin={(login) => setLogin(login)} />)}
-					{value === 1 && <Register />}
-					{value === 2 && <Guest />}
-				</>
-			)) || (
-				<>
-					{/* 	<SearchUsers /> */}
-					<Chat login={login} />
-				</>
-			)}
-		</div>
-	);
+  //console.log(login);
+  return (
+    <div className="fle flex-co min-w-auto font-mono px-10">
+      {(true && (
+        <>
+          <Box>
+            <Tabs
+              className="header__tabs"
+              value={value}
+              onChange={(_, value) => setValue(value)}
+            >
+              {["Login", "REGISTER", "GUESTR"].map((name) => (
+                <Tab label={name} />
+              ))}
+            </Tabs>
+          </Box>
+          {value === 0 &&
+            (() => <Login getLogin={(login) => setLogin(login)} />)}
+          {value === 1 && <Register />}
+          {value === 2 && <Guest />}
+        </>
+      )) || (
+        <>
+          {/* 	<SearchUsers /> */}
+          <Chat login={login} />
+        </>
+      )}
+    </div>
+  );
 }
 export default App;

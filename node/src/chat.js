@@ -2,32 +2,36 @@ const { WebSocketServer } = require("ws");
 const { v4 } = require("uuid");
 
 let clients = [];
-const chat = async () => {
-	try {
-		console.log("JESTEM");
-		const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
-		//INCOMING MESSAGE
-		const messageListener = (ws) => {
-			ws.on("message", (data, isBinary) => {
-				const { message = "", login } = JSON.parse(data);
-				const responseData = JSON.stringify({
-					message: isBinary ? message : message.toString(),
-					id: v4(),
-					sender: login,
-				});
-				clients.forEach((client) => {
-					client.send(responseData);
-				});
-			});
-		};
+const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
 
-		wsServer.on("connection", async (ws, req) => {
-			const url = new URL(req.url, `http://${req.headers.host}`);
-			ws.userName = url.searchParams.get("user");
+const chat = async (room) => {
+  try {
+    const messageListener = (socket) => {
+      socket.on("message", (data, isBinary) => {
+        const { message = "", login, room } = JSON.parse(data);
+        const responseData = JSON.stringify({
+          message: isBinary ? message : message.toString(),
+          id: v4(),
+          sender: login,
+        });
+        clients
+          .filter((client) => room === client.room)
+          .forEach((client) => {
+            client.send(responseData);
+          });
+      });
+    };
 
-			clients.push(ws);
-			messageListener(ws);
-		});
-	} catch (err) {}
+    wsServer.on("connection", async (socket, req) => {
+      /*   const url = new URL(req.url, `http://${req.headers.host}`);
+      socket.userName = url.searchParams.get("user"); */
+      socket.room = room;
+      clients.push(socket);
+      messageListener(socket);
+    });
+  } catch (err) {
+    console.log("ERROR: ", err);
+  }
 };
+
 module.exports = chat;

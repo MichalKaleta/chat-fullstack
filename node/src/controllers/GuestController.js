@@ -2,16 +2,10 @@ const pool = require("../config/connection");
 const { getRandomInt } = require("../utils/index");
 
 class GuestController {
-	constructor(req, res) {
-		this.req = req;
-		this.res = res;
-
-		this.guestName = `${req.body.guestName}${getRandomInt(10000000)}`;
-	}
-
-	sendGuestName = async () => {
-		this.res.json({ guestName: this.guestName });
-	};
+  sendGuestName = async (req, res, next) => {
+    const guestName = `${req.body.guestName}-${getRandomInt(10000000)}`;
+    res.json({ guestName });
+  };
 }
-
-module.exports = GuestController;
+const guestController = new GuestController();
+module.exports = guestController;
