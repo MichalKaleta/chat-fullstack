@@ -16,7 +16,7 @@ export default function Guest() {
     });
     const room = res.data.room;
     console.log(res.data.room);
-    window.location.replace(`/chat/${room}`);
+    window.location.replace(`/chat/${room}/${guestName}`);
   };
   const {
     data: guestData,

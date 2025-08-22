@@ -16,11 +16,11 @@ function logErrorToService(error: Error, info: string) {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ErrorBoundary onError={logErrorToService}>	
+      <ErrorBoundary onError={logErrorToService}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<App />} />
-            <Route path="/chat/:room" element={<ChatGuest />} />
+            <Route path="/chat/:room/:guestName" element={<ChatGuest />} />
           </Routes>
         </BrowserRouter>
       </ErrorBoundary>

@@ -4,15 +4,15 @@ const { v4 } = require("uuid");
 let clients = [];
 const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
 
-const chat = async (room) => {
+const chat = async (room, guestName) => {
   try {
     const messageListener = (socket) => {
       socket.on("message", (data, isBinary) => {
-        const { message = "", login, room } = JSON.parse(data);
+        const { message = "", guestName, room } = JSON.parse(data);
         const responseData = JSON.stringify({
           message: isBinary ? message : message.toString(),
           id: v4(),
-          sender: login,
+          sender: guestName,
         });
         clients
           .filter((client) => room === client.room)
@@ -26,6 +26,7 @@ const chat = async (room) => {
       /*   const url = new URL(req.url, `http://${req.headers.host}`);
       socket.userName = url.searchParams.get("user"); */
       socket.room = room;
+      socket.guestName = guestName;
       clients.push(socket);
       messageListener(socket);
     });

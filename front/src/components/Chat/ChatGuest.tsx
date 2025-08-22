@@ -10,13 +10,13 @@ type chatMsgsType = {
   sender: string;
 };
 
-const Chat: FC<{ login: string }> = ({ login = "" }) => {
+const Chat: FC<{ login: string }> = () => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const wsUrl = encodeURI(`${wsUri}`);
 
-  const { room } = useParams();
+  const { room, guestName } = useParams();
 
   useEffect(() => {
     setSocket(new WebSocket(wsUrl));
@@ -29,23 +29,24 @@ const Chat: FC<{ login: string }> = ({ login = "" }) => {
   });
 
   const sendMessage = () => {
-    socket?.send(JSON.stringify({ message, login, room }));
+    socket?.send(JSON.stringify({ message, guestName, room }));
     //socket?.send(message);
   };
 
   return (
     <>
-      <div className=" chat__container flex flex-col  justify-center">
-        "Witaj na czacie {login}"
+      <div className=" chat__container flex flex-col justify-center">
+        "Witaj na czacie {guestName}"
         <ul className="flex flex-col w-full h-96 overflow-hidden bg-slate-200  mt-10 p-4 justify-end w-400 items-end">
           {chatMsgs.map(({ message, id, sender }) => (
             <li
-              key={message}
+              key={id}
               className={`${
-                (sender != login && "self-start bg-yellow-500") || "bg-sky-300"
+                (sender != guestName && "self-start bg-yellow-500") ||
+                "bg-sky-300"
               }  max-w-80 border-r-4 border-b-4 border-l-2 border-t-2 border-black rounded-xl text-xl p-2 my-1`}
             >
-              <div className="text-xs .ease-linear  duration-75">{sender}</div>
+              <div className="text-xs .ease-linear duration-75">{sender}</div>
               <div>{message}</div>
             </li>
           ))}
