@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { WebSocketServer } = require("ws");
 
 const verifyToken = require("../middleware/jwtAuthorization");
 const LoginController = require("../controllers/LoginController");
@@ -7,8 +8,6 @@ const RegisterController = require("../controllers/RegiterController");
 const guestController = require("../controllers/GuestController");
 const SearchController = require("../controllers/SearchController");
 const FriendController = require("../controllers/FriendController");
-const chat = require("../chat");
-///const BaseError = require("../utils/Error");
 const { getRandomInt } = require("../utils/index");
 
 //LOGIN
@@ -51,8 +50,13 @@ router.get("/api/chat", verifyToken, async (req, res) => {
 router.post("/api/guest-chat", async (req, res) => {
   const guestName = req.body.guestName;
   const room = `${guestName}-${getRandomInt(10000000)}`;
-  const chat1 = await chat(room, guestName);
-  console.log(chat1);
+  await guestController.newSocket(room, guestName);
   res.send({ guestName, room });
 });
+
+router.post("/api/guest-chat-join", async (req, res) => {
+  const guestName = req.body.guestName;
+  res.send({ guestName, room });
+});
+
 module.exports = router;

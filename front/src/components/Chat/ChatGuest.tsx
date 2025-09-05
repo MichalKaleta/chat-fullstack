@@ -10,34 +10,44 @@ type chatMsgsType = {
   sender: string;
 };
 
-const Chat: FC<{ login: string }> = () => {
+const ChatGuest = () => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const wsUrl = encodeURI(`${wsUri}`);
-
+  const wsUrl = encodeURI(wsUri);
   const { room, guestName } = useParams();
-
+  const inviteLink = `${location.host}/join-guest-chat/${room}`;
+  console.log("RERENDR");
   useEffect(() => {
-    setSocket(new WebSocket(wsUrl));
-    return () => {};
+    !socket && setSocket(new WebSocket(wsUrl));
   }, []);
 
   socket?.addEventListener("message", (event: { data: string }) => {
-    setChatMsgs(() => [...chatMsgs, JSON.parse(event.data)]);
-    setMessage(() => "");
+    const msg = JSON.parse(event.data);
+
+    setChatMsgs(() => [...chatMsgs, msg]);
   });
 
   const sendMessage = () => {
-    socket?.send(JSON.stringify({ message, guestName, room }));
-    //socket?.send(message);
+    message && socket?.send(JSON.stringify({ message, guestName, room }));
   };
 
   return (
     <>
-      <div className=" chat__container flex flex-col justify-center">
-        "Witaj na czacie {guestName}"
-        <ul className="flex flex-col w-full h-96 overflow-hidden bg-slate-200  mt-10 p-4 justify-end w-400 items-end">
+      <div className="chat__container  w-3/5">
+        `` Hey {guestName}!
+        <InputContainer className="">
+          <p>Press </p>
+          <Button
+            className="w-400"
+            text=" copy link "
+            onClick={() => {
+              navigator.clipboard.writeText(inviteLink);
+            }}
+          />
+          <p> and send it to Your friend!</p>
+        </InputContainer>
+        <ul className="flex flex-col w-full h-96 overflow-hidden bg-slate-200  mt-10 p-4 justify-end items-end">
           {chatMsgs.map(({ message, id, sender }) => (
             <li
               key={id}
@@ -53,14 +63,10 @@ const Chat: FC<{ login: string }> = () => {
         </ul>
         <InputContainer>
           <Input value={message} onChange={(e) => setMessage(e.target.value)} />
-          <Button
-            className="mr-0"
-            text="Send"
-            onClick={() => message && sendMessage()}
-          />
+          <Button className="mr-0" text="Send" onClick={sendMessage} />
         </InputContainer>
       </div>
     </>
   );
 };
-export default Chat;
+export default ChatGuest;

@@ -1,46 +1,43 @@
 import { useState } from "react";
-import Register from "./components/Register/Register";
-import Login from "./components/Login/Login";
-import Chat from "./components/Chat/Chat";
-import Guest from "./components/Guest/Guest";
-/* import SearchUsers from "./components/SearchUsers/SearchUsers"; */
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import Router from "./Router";
+import Guest from "./components/Guest/Guest";
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
 import "./App.scss";
 
 function App() {
   const [login, setLogin] = useState("");
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(2);
 
-  //console.log(login);
+  console.log(login);
   return (
-    <div className="fle flex-co min-w-auto font-mono px-10">
-      {(true && (
+    <main className="min-w-auto font-mono px-10 text-2xl">
+      <Box>
+        <Tabs
+          className="header__tabs"
+          value={value}
+          onChange={(_, value) => setValue(value)}
+        >
+          {["LOGIN", "REGISTER", "GUEST"].map((name) => (
+            <Tab label={name} />
+          ))}
+        </Tabs>
+      </Box>
+      {!login && (
         <>
-          <Box>
-            <Tabs
-              className="header__tabs"
-              value={value}
-              onChange={(_, value) => setValue(value)}
-            >
-              {["Login", "REGISTER", "GUESTR"].map((name) => (
-                <Tab label={name} />
-              ))}
-            </Tabs>
-          </Box>
-          {value === 0 &&
-            (() => <Login getLogin={(login) => setLogin(login)} />)}
+          {value === 0 && <Login getLogin={(login) => setLogin(login)} />}
           {value === 1 && <Register />}
-          {value === 2 && <Guest />}
-        </>
-      )) || (
-        <>
-          {/* 	<SearchUsers /> */}
-          <Chat login={login} />
+          {value === 2 && <Guest getLogin={(login) => setLogin(login)} />}
         </>
       )}
-    </div>
+
+      <div className="flex justify-center">
+        <Router />
+      </div>
+    </main>
   );
 }
 export default App;
