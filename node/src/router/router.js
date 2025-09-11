@@ -12,45 +12,20 @@ const path = require("node:path");
 
 const router = express.Router();
 console.log("router.js loaded");
+
 //LOGIN
-router.post("/api/login", async (req, res, next) => {
-  try {
-    const loginController = new LoginController(req, res, next);
-    loginController.loginUser();
-  } catch (err) {
-    next(err);
-  }
-});
-/* router.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../dist"));
-}); */
-//ADD FRIEND
-router.post("/api/addFriend", (req, res) => {
-  const friendController = new FriendController(req, res);
-  friendController.addFriend();
-});
 
-//SEARCH
-router.get("/api/search", (req, res) => {
-  const searchController = new SearchController(req, res);
-  searchController.getUsers();
-});
-
-//GUEST
-router.post("/api/guest", guestController.sendGuestName);
-
-//REGISTER
-router.post("/api/register", async (req, res) => {
-  const registerController = new RegisterController(req, res);
-  registerController.sendMail();
-});
 //CHAT
 
 const rooms = {};
 const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
-connetionsCount = 0;
+let connetionsCount = 0;
 
-wsServer.on("connection", async (socket, req) => {
+console.log("WebSocket server: " + wsServer)
+
+wsServer.on("connection", async (socket, req) => {  
+
+  console.log("New connection established");
   const len = req.url.length;
   const url = new URL("https://www.placeholder.com" + req.url.slice(1, len));
   const room = url.searchParams.get("room");
@@ -59,6 +34,7 @@ wsServer.on("connection", async (socket, req) => {
     rooms[room] = [];
   }
   rooms[room].push(socket);
+
   console.table(rooms);
 
   socket.on("message", (data, isBinary) => {
@@ -75,7 +51,37 @@ wsServer.on("connection", async (socket, req) => {
   });
 });
 
-router.get("/api/chat", verifyToken, async (req, res) => {
+router.post("/login", async (req, res, next) => {
+  try {
+    const loginController = new LoginController(req, res, next);
+    loginController.loginUser();
+  } catch (err) {
+    next(err);
+  }
+});
+
+//ADD FRIEND
+router.post("/addFriend", (req, res) => {
+  const friendController = new FriendController(req, res);
+  friendController.addFriend();
+});
+
+//SEARCH
+router.get("/search", (req, res) => {
+  const searchController = new SearchController(req, res);
+  searchController.getUsers();
+});
+
+//GUEST
+router.post("/guest", guestController.sendGuestName);
+
+//REGISTER
+router.post("/register", async (req, res) => {
+  const registerController = new RegisterController(req, res);
+  registerController.sendMail();
+});
+
+router.get("/chat", verifyToken, async (req, res) => {
   res.send({ ok: "ok" });
 });
 
@@ -86,7 +92,7 @@ router.post("/guest-chat", async (req, res) => {
   res.send({ guestName, room });
 });
 
-router.post("/api/guest-chat-join", async (req, res) => {
+router.post("/guest-chat-join", async (req, res) => {
   const { guestName, room } = req.body;
   res.send({ guestName, room });
 });

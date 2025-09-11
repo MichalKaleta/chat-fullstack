@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
+//const wsUri = `ws://${window.location.hostname}:1337`;
 const wsUri = `wss://${window.location.hostname}:1337`;
-
+console.log("wsUri: " + wsUri);
 type chatMsgsType = {
   message: string;
   id: string;
@@ -32,7 +33,10 @@ const ChatGuest = () => {
     setChatMsgs(() => [...chatMsgs, msg]);
   });
 
+  console.log(socket);
+
   const sendMessage = () => {
+    console.log("sending message: " + message);
     message && socket?.send(JSON.stringify({ message, guestName, room }));
     setMessage("");
   };
