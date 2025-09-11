@@ -1,5 +1,17 @@
 {
-  "dependencies": {
-    "react-router": "^7.7.1"
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "install": "npm install --prefix ./front && npm install --prefix ./node",
+    "build": "npm run build --prefix ./front",
+    "start": "cd ./node && node ./src/server.js",
+    "dev-front": "cd ./front && npm run dev",
+    "dev-back": "cd ./node && npm run dev",
+    "dev": "npm run dev-front &&  nodemon --env-file=.env.production ./src/server.js",
+    "license": "ISC",
+    "dependencies": {},
+    "devDependencies": {}
   }
 }

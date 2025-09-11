@@ -8,8 +8,10 @@ const guestController = require("../controllers/GuestController");
 const SearchController = require("../controllers/SearchController");
 const FriendController = require("../controllers/FriendController");
 const { getRandomInt } = require("../utils/index");
+const path = require("node:path");
 
 const router = express.Router();
+console.log("router.js loaded");
 //LOGIN
 router.post("/api/login", async (req, res, next) => {
   try {
@@ -19,7 +21,9 @@ router.post("/api/login", async (req, res, next) => {
     next(err);
   }
 });
-
+/* router.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../dist"));
+}); */
 //ADD FRIEND
 router.post("/api/addFriend", (req, res) => {
   const friendController = new FriendController(req, res);
@@ -37,7 +41,6 @@ router.post("/api/guest", guestController.sendGuestName);
 
 //REGISTER
 router.post("/api/register", async (req, res) => {
-  console.log("fd");
   const registerController = new RegisterController(req, res);
   registerController.sendMail();
 });
@@ -48,11 +51,9 @@ const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
 connetionsCount = 0;
 
 wsServer.on("connection", async (socket, req) => {
-  connetionsCount++;
   const len = req.url.length;
   const url = new URL("https://www.placeholder.com" + req.url.slice(1, len));
   const room = url.searchParams.get("room");
-  //const guestName = url.searchParams.get("guestName");
 
   if (!rooms[room]) {
     rooms[room] = [];
@@ -77,23 +78,16 @@ wsServer.on("connection", async (socket, req) => {
 router.get("/api/chat", verifyToken, async (req, res) => {
   res.send({ ok: "ok" });
 });
-let a = 0;
 
-router.post("/api/guest-chat", async (req, res) => {
-  a++;
+router.post("/guest-chat", async (req, res) => {
+  console.log("guest-chat", req.body);
   const guestName = req.body.guestName;
-  const room = `${guestName}-${getRandomInt(10000000)}`;
-  // await guestController.newSocket(room, guestName);
-  console.log(a);
+  const room = `${guestName}-${getRandomInt(10000000000)}`;
   res.send({ guestName, room });
 });
 
 router.post("/api/guest-chat-join", async (req, res) => {
-  a++;
   const { guestName, room } = req.body;
-  console.log(room);
-  // await guestController.newSocket(room, guestName);
-  console.log(a);
   res.send({ guestName, room });
 });
 

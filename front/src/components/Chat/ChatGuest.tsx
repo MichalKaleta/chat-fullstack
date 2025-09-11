@@ -1,8 +1,8 @@
-import { useEffect, useState, FC, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
-const wsUri = "ws://localhost:1337";
+const wsUri = `wss://${window.location.hostname}:1337`;
 
 type chatMsgsType = {
   message: string;
@@ -13,21 +13,18 @@ type chatMsgsType = {
 const ChatGuest = () => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
-  const wsUrl = encodeURI(wsUri);
+  //const wsUrl = encodeURI(wsUri);
   const { room, guestName } = useParams();
-  const [socket, setSocket] = useState<WebSocket | null>(
-    () => new WebSocket(`${wsUrl}?guestName=${guestName}&room=${room}`)
-  );
+  const [socket, setSocket] = useState<WebSocket | null>();
+
   const inviteLink = `${location.host}/join-guest-chat/${room}`;
-  console.log("RERENDR");
 
   useEffect(() => {
-    //return () => //socket?.close();
+    const socketUrl = encodeURI(`${wsUri}?guestName=${guestName}&room=${room}`);
+    console.log(socketUrl);
+    setSocket(() => new WebSocket(socketUrl));
+    //return () => socket?.close();
   }, []);
-
-  socket?.addEventListener("open", (event) => {
-    socket.send(JSON.stringify({ room, guestName }));
-  });
 
   socket?.addEventListener("message", (event: { data: string }) => {
     const msg = JSON.parse(event.data);
@@ -37,12 +34,13 @@ const ChatGuest = () => {
 
   const sendMessage = () => {
     message && socket?.send(JSON.stringify({ message, guestName, room }));
+    setMessage("");
   };
 
   return (
     <>
       <div className="chat__container  w-3/5">
-        `` Hey {guestName}!
+        Hey {guestName}!
         <InputContainer className="">
           <p>Press </p>
           <Button
@@ -52,7 +50,7 @@ const ChatGuest = () => {
               navigator.clipboard.writeText(inviteLink);
             }}
           />
-          <p> and send it to Your friend!</p>
+          <p> and send it to Your Friends!</p>
         </InputContainer>
         <ul className="flex flex-col w-full h-96 overflow-hidden bg-slate-200  mt-10 p-4 justify-end items-end">
           {chatMsgs.map(({ message, id, sender }) => (

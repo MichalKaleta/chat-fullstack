@@ -1,4 +1,4 @@
-import { HTMLInputTypeAttribute, ComponentProps, ReactNode } from "react";
+import { ComponentProps, ReactNode } from "react";
 
 type ButtonProps = {
   text?: ReactNode;
