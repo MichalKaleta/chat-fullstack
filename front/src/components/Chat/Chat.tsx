@@ -13,7 +13,7 @@ const Chat: FC<{ login: string }> = ({ login = "" }) => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const wsUrl = encodeURI(`${wsUri}/?user=${login}`);
+  const wsUrl = encodeURI(`${wsUri}?user=${login}`);
 
   useEffect(() => {
     setSocket(new WebSocket(wsUrl));
@@ -23,6 +23,10 @@ const Chat: FC<{ login: string }> = ({ login = "" }) => {
   socket?.addEventListener("message", (event: { data: string }) => {
     setChatMsgs(() => [...chatMsgs, JSON.parse(event.data)]);
     setMessage(() => "");
+  });
+
+  socket?.addEventListener("open", () => {
+    console.log("sdfOPENDdf");
   });
 
   const sendMessage = () => {

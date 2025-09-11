@@ -1,4 +1,4 @@
-import { useEffect, useState, FC } from "react";
+import { useEffect, useState, FC, useRef } from "react";
 import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
@@ -13,14 +13,21 @@ type chatMsgsType = {
 const ChatGuest = () => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
   const wsUrl = encodeURI(wsUri);
   const { room, guestName } = useParams();
+  const [socket, setSocket] = useState<WebSocket | null>(
+    () => new WebSocket(`${wsUrl}?guestName=${guestName}&room=${room}`)
+  );
   const inviteLink = `${location.host}/join-guest-chat/${room}`;
   console.log("RERENDR");
+
   useEffect(() => {
-    !socket && setSocket(new WebSocket(wsUrl));
+    //return () => //socket?.close();
   }, []);
+
+  socket?.addEventListener("open", (event) => {
+    socket.send(JSON.stringify({ room, guestName }));
+  });
 
   socket?.addEventListener("message", (event: { data: string }) => {
     const msg = JSON.parse(event.data);

@@ -7,12 +7,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 
 export default function ChatGuestJoin() {
-  const { room, hostName } = useParams();
+  const { room } = useParams();
+  console.log(room);
   const [guestName, setGuestName] = useState("");
 
   const sendGuestName = async () => {
-    const res = await axios.post("http://localhost:3000/api/guest-chat", {
+    const res = await axios.post("http://localhost:3000/api/guest-chat-join", {
       guestName,
+      room,
     });
 
     window.location.replace(`/chat/${room}/${guestName}`);
