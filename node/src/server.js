@@ -19,25 +19,12 @@ if (process.env.ENV === "development") {
 }
 
 app.use("/", express.static(path.join(__dirname, "../dist")));
-// This code makes sure that any request that does not matches a static file
-// in the build folder, will just serve index.html. Client side routing is
-// going to make sure that the correct content will be loaded.
-/* app.use((req, res, next) => {
-  if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
-    next();
-  } else {
-    res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
-    res.header("Expires", "-1");
-    res.header("Pragma", "no-cache");
-    res.sendFile(path.join(__dirname, "../dist", "index.html"));
-  }
-});
 
-app.use(express.static(path.join("/dist"))); */
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.use(["/api"], router);
+
 app.get("*", (req, res) => {
   res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
   res.header("Expires", "-1");
