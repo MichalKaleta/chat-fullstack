@@ -7,6 +7,7 @@ import Guest from "./components/Guest/Guest";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import "./App.scss";
+import { BrowserRouter } from "react-router";
 
 function App() {
   const [login, setLogin] = useState("");
@@ -14,30 +15,32 @@ function App() {
 
   console.log(login);
   return (
-    <main className="min-w-auto font-mono px-10 text-2xl">
-      <Box>
-        <Tabs
-          className="header__tabs"
-          value={value}
-          onChange={(_, value) => setValue(value)}
-        >
-          {["LOGIN", "REGISTER", "GUEST"].map((name) => (
-            <Tab label={name} />
-          ))}
-        </Tabs>
-      </Box>
-      {!login && (
-        <>
-          {value === 0 && <Login getLogin={(login) => setLogin(login)} />}
-          {value === 1 && <Register />}
-          {value === 2 && <Guest getLogin={(login) => setLogin(login)} />}
-        </>
-      )}
+    <BrowserRouter>
+      <main className="min-w-auto font-mono px-10 text-2xl">
+        <Box>
+          <Tabs
+            className="header__tabs"
+            value={value}
+            onChange={(_, value) => setValue(value)}
+          >
+            {["LOGIN", "REGISTER", "GUEST"].map((name) => (
+              <Tab label={name} />
+            ))}
+          </Tabs>
+        </Box>
+        {!login && (
+          <>
+            {value === 0 && <Login getLogin={(login) => setLogin(login)} />}
+            {value === 1 && <Register />}
+            {value === 2 && <Guest getLogin={(login) => setLogin(login)} />}
+          </>
+        )}
 
-      <div className="flex justify-center">
-        <Router />
-      </div>
-    </main>
+        <div className="flex justify-center">
+          <Router />
+        </div>
+      </main>
+    </BrowserRouter>
   );
 }
 export default App;

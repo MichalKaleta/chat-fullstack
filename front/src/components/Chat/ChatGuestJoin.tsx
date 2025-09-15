@@ -4,7 +4,6 @@ import { Button } from "../Form/Form";
 import { Input } from "../Form/Form";
 import { useState } from "react";
 import DialogTitle from "@mui/material/DialogTitle";
-import axios from "axios";
 
 export default function ChatGuestJoin() {
   const { room } = useParams();
@@ -12,13 +11,9 @@ export default function ChatGuestJoin() {
   const [guestName, setGuestName] = useState("");
 
   const sendGuestName = async () => {
-    const res = await axios.post("http://localhost:3000/api/guest-chat-join", {
-      guestName,
-      room,
-    });
-
     window.location.replace(`/chat/${room}/${guestName}`);
   };
+
   return (
     <Dialog
       open={true}

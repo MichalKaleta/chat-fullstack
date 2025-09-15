@@ -4,29 +4,47 @@ const express = require("express");
 const cors = require("cors");
 const router = require("./router/router");
 const verifyToken = require("./middleware/jwtAuthorization");
-
 const app = express();
+const errorHandler = (err, req, res, next) => {
+  log(JSON.stringify(err));
+  log(err);
+  res.status(401).send(err.message);
+};
 
 global.log = () => null;
 
 if (process.env.ENV === "development") {
   log = (msg) => console.log(`\x1b[33m ${msg}\x1b[0m`);
   app.use(cors());
-  console.log("d");
 }
 
-const errorHandler = (err, req, res, next) => {
-  //log(typeof err);
+app.use("/", express.static(path.join(__dirname, "../dist")));
+// This code makes sure that any request that does not matches a static file
+// in the build folder, will just serve index.html. Client side routing is
+// going to make sure that the correct content will be loaded.
+/* app.use((req, res, next) => {
+  if (/(.ico|.js|.css|.jpg|.png|.map)$/i.test(req.path)) {
+    next();
+  } else {
+    res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+    res.header("Expires", "-1");
+    res.header("Pragma", "no-cache");
+    res.sendFile(path.join(__dirname, "../dist", "index.html"));
+  }
+});
 
-  log(JSON.stringify(err));
-  log(err);
-  res.status(401).send(err.message);
-};
-
+app.use(express.static(path.join("/dist"))); */
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-app.use(router);
+app.use(["/api"], router);
+app.get("*", (req, res) => {
+  res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+  res.header("Expires", "-1");
+  res.header("Pragma", "no-cache");
+  res.sendFile(path.join(__dirname, "../dist", "index.html"));
+});
+
 app.use(errorHandler);
 app.listen(process.env.PORT_APP, () => {
   log(`Listening on port ${process.env.PORT_APP}`);

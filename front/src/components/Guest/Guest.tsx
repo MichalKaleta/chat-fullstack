@@ -1,19 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import { Button, Input } from "../Form/Form";
 
 type Props = { getLogin: (name: string) => void };
 export default function Guest({ getLogin }: Props) {
   const [guestName, setGuestName] = useState("");
-
+  const navigate = useNavigate();
   const sendGuestName = async () => {
     getLogin(guestName);
-    const res = await axios.post("http://localhost:3000/api/guest-chat", {
+    const res = await axios.post("/api/guest-chat", {
       guestName,
     });
     const room = res.data.room;
-    console.log(res.data.room);
-    window.location.replace(`/chat/${room}/${guestName}`);
+    navigate(`/chat/${room}/${guestName}`);
   };
 
   return (

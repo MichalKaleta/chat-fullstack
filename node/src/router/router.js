@@ -8,6 +8,7 @@ const guestController = require("../controllers/GuestController");
 const SearchController = require("../controllers/SearchController");
 const FriendController = require("../controllers/FriendController");
 const { getRandomInt } = require("../utils/index");
+const path = require("node:path");
 
 const router = express.Router();
 //LOGIN
@@ -19,7 +20,9 @@ router.post("/api/login", async (req, res, next) => {
     next(err);
   }
 });
-
+/* router.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../dist"));
+}); */
 //ADD FRIEND
 router.post("/api/addFriend", (req, res) => {
   const friendController = new FriendController(req, res);
@@ -75,7 +78,7 @@ router.get("/api/chat", verifyToken, async (req, res) => {
   res.send({ ok: "ok" });
 });
 
-router.post("/api/guest-chat", async (req, res) => {
+router.post("/guest-chat", async (req, res) => {
   const guestName = req.body.guestName;
   const room = `${guestName}-${getRandomInt(10000000000)}`;
   res.send({ guestName, room });
