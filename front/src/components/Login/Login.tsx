@@ -19,12 +19,12 @@ const Login: React.FC<LoginParams> = ({ getLogin }) => {
   });
 
   const sendGuestName = async () =>
-    axios.post("http://localhost:3000/api/guest", {
+    axios.post("/api/guest", {
       guestName,
     });
 
   const sendLoginData = async () =>
-    axios.post(`http://${host}:3000/api/login`, {
+    axios.post(`/${host}:3000/api/login`, {
       login,
       password,
     });
@@ -38,7 +38,6 @@ const Login: React.FC<LoginParams> = ({ getLogin }) => {
     AxiosError<{ data: string }>
   >("login", sendGuestName, {
     onSuccess: (res) => {
-      //axios.defaults.baseURL = 'http://localhost:1010/'
       const login = res.data.login;
       const token = res.data.token;
       axios.defaults.headers.common = {
