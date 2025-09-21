@@ -6,10 +6,12 @@
   "scripts": {
     "build-front": "cd ./front && npm run build",
     "start-back": "cd ./node && node --env-file=.env.production ./src/server.js",
-    "start": "npm run build-front && npm run start-back"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {},
-  "devDependencies": {}
+    "start": "npm run build-front && npm run start-back",
+    "dev-front": "cd ./front && npm run dev",
+    "dev-back": "cd ./node && npm run dev",
+    "dev": "npm run dev-front &&  nodemon --env-file=.env.production ./src/server.js",
+    "license": "ISC",
+    "dependencies": {},
+    "devDependencies": {}
+  }
 }

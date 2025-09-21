@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import axios from "axios";
+import { apiCall } from "../../utils/apiCall";
 import { Button, Input } from "../Form/Form";
 
 type Props = { getLogin: (name: string) => void };
 export default function Guest({ getLogin }: Props) {
   const [guestName, setGuestName] = useState("");
   const navigate = useNavigate();
+
   const sendGuestName = async () => {
     getLogin(guestName);
-    const res = await axios.post("/api/guest-chat", {
+    const res = await apiCall.post("/api/guest-chat", {
       guestName,
     });
     const room = res.data.room;
