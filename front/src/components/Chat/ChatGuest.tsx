@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
-const wsUri = "ws://localhost:1337";
+const wsUri = `wss://${window.location.hostname}:1337`;
 
 type chatMsgsType = {
   message: string;
@@ -13,16 +13,16 @@ type chatMsgsType = {
 const ChatGuest = () => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
-  const wsUrl = encodeURI(wsUri);
+  //const wsUrl = encodeURI(wsUri);
   const { room, guestName } = useParams();
   const [socket, setSocket] = useState<WebSocket | null>();
 
   const inviteLink = `${location.host}/join-guest-chat/${room}`;
 
   useEffect(() => {
-    setSocket(
-      () => new WebSocket(`${wsUrl}?guestName=${guestName}&room=${room}`)
-    );
+    const socketUrl = encodeURI(`${wsUri}?guestName=${guestName}&room=${room}`);
+    console.log(socketUrl);
+    setSocket(() => new WebSocket(socketUrl));
     //return () => socket?.close();
   }, []);
 

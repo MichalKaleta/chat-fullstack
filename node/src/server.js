@@ -10,6 +10,18 @@ const errorHandler = (err, req, res, next) => {
   log(err);
   res.status(401).send(err.message);
 };
+var fs = require("fs");
+var http = require("http");
+var https = require("https");
+var privateKey = fs.readFileSync(__dirname + "/cert/selfsigned.key", "utf-8");
+var certificate = fs.readFileSync(__dirname + "/cert/selfsigned.crt", "utf-8");
+
+var credentials = { key: privateKey, cert: certificate };
+
+// your express configuration here
+
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
 
 global.log = () => null;
 
@@ -33,6 +45,8 @@ app.get("*", (req, res) => {
 });
 
 app.use(errorHandler);
-app.listen(process.env.PORT_APP, () => {
+/* app.listen(process.env.PORT_APP, () => {
   log(`Listening on port ${process.env.PORT_APP}`);
-});
+}); */
+//httpServer.listen(3000);
+httpsServer.listen(process.env.PORT_APP);
