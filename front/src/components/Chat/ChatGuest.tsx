@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
-const wsUri = `wss://${location.hostname}:1337`;
+const wsUri = `ws://${location.hostname}:1337`;
 
 type chatMsgsType = {
   message: string;
@@ -13,7 +13,6 @@ type chatMsgsType = {
 const ChatGuest = () => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
-  //const wsUrl = encodeURI(wsUri);
   const { room, guestName } = useParams();
   const [socket, setSocket] = useState<WebSocket | null>();
 
