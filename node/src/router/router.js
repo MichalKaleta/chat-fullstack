@@ -46,7 +46,7 @@ router.post("/api/register", async (req, res) => {
 //CHAT
 
 const rooms = {};
-const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
+const wsServer = new WebSocketServer();
 connetionsCount = 0;
 
 wsServer.on("connection", async (socket, req) => {
