@@ -13,10 +13,6 @@ const errorHandler = (err, req, res, next) => {
 var fs = require("fs");
 var http = require("http");
 var https = require("https");
-var privateKey = fs.readFileSync(__dirname + "/cert/selfsigned.key", "utf-8");
-var certificate = fs.readFileSync(__dirname + "/cert/selfsigned.crt", "utf-8");
-
-var credentials = { key: privateKey, cert: certificate };
 
 // your express configuration here
 
@@ -43,7 +39,7 @@ if (process.env.ENV === "development") {
   app.use(cors());
 
   var httpsServer = https.createServer(credentials, app);
-  httpServer.listen(3000);
+  httpServer.listen(process.env.PORT_APP);
 } else {
   var httpsServer = https.createServer(app);
   /* app.listen(process.env.PORT_APP, () => {
