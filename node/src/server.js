@@ -45,6 +45,7 @@ if (process.env.ENV === "development") {
   var httpsServer = https.createServer(credentials, app);
   httpServer.listen(3000);
 } else {
+  var httpsServer = https.createServer(app);
   /* app.listen(process.env.PORT_APP, () => {
   log(`Listening on port ${process.env.PORT_APP}`);
 }); */
