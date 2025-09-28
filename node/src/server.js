@@ -1,7 +1,7 @@
 const path = require("node:path");
 const pool = require("./config/connection");
 const express = require("express");
-const cors = require("cors");
+//const cors = require("cors");
 const router = require("./router/router");
 const verifyToken = require("./middleware/jwtAuthorization");
 const app = express();
@@ -33,13 +33,11 @@ app.get("*", (req, res) => {
 });
 
 app.use(errorHandler);
+
 if (process.env.ENV === "development") {
   var httpServer = http.createServer(app);
   log = (msg) => console.log(`\x1b[33m ${msg}\x1b[0m`);
-  app.use(cors());
-
-  var httpsServer = https.createServer(credentials, app);
-  z;
+  //app.use(cors());
   httpServer.listen(3000);
 } else {
   /* app.listen(process.env.PORT_APP, () => {
