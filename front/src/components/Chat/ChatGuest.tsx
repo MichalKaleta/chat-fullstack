@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
-const wsUri = `wss://${location.hostname}`;
+const wsUri = `wss://${location.hostname}/ws`;
 
 type chatMsgsType = {
   message: string;
