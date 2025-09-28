@@ -20,15 +20,7 @@ var credentials = { key: privateKey, cert: certificate };
 
 // your express configuration here
 
-var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
-
 global.log = () => null;
-
-if (process.env.ENV === "development") {
-  log = (msg) => console.log(`\x1b[33m ${msg}\x1b[0m`);
-  app.use(cors());
-}
 
 app.use("/", express.static(path.join(__dirname, "../dist")));
 
@@ -45,8 +37,16 @@ app.get("*", (req, res) => {
 });
 
 app.use(errorHandler);
-/* app.listen(process.env.PORT_APP, () => {
+if (process.env.ENV === "development") {
+  var httpServer = http.createServer(app);
+  log = (msg) => console.log(`\x1b[33m ${msg}\x1b[0m`);
+  app.use(cors());
+
+  var httpsServer = https.createServer(credentials, app);
+  httpServer.listen(3000);
+} else {
+  /* app.listen(process.env.PORT_APP, () => {
   log(`Listening on port ${process.env.PORT_APP}`);
 }); */
-//httpServer.listen(3000);
-httpsServer.listen(process.env.PORT_APP);
+  httpsServer.listen(process.env.PORT_APP);
+}
