@@ -3,9 +3,9 @@ import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
 //const wsUri = `ws://${window.location.hostname}:1337`;
-const wsUri = `wss://${window.location.hostname}:1337`;
+const wsUri = `wss://${window.location.hostname}`;
 console.log("wsUri: " + wsUri);
-type chatMsgsType = {
+type chatMsgsType = { 
   message: string;
   id: string;
   sender: string;

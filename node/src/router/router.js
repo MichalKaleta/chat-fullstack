@@ -1,4 +1,5 @@
 const express = require("express");
+const http = require("http");
 const { v4 } = require("uuid");
 const { WebSocketServer } = require("ws");
 const verifyToken = require("../middleware/jwtAuthorization");
@@ -16,9 +17,12 @@ console.log("router.js loaded");
 //LOGIN
 
 //CHAT
+const server = http.createServer();
+const wsServer = new WebSocketServer({ server });
+ 
 
 const rooms = {};
-const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
+//const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
 let connetionsCount = 0;
 
 console.log("WebSocket server: " + wsServer)
