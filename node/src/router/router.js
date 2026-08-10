@@ -25,7 +25,7 @@ const rooms = {};
 //const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
 let connetionsCount = 0;
 
-console.log("WebSocket server: " + wsServer)
+console.log("WebSocket server: " + wsServer.address)
 
 wsServer.on("connection", async (socket, req) => {  
 
