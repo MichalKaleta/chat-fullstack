@@ -17,15 +17,15 @@ console.log("router.js loaded");
 //LOGIN
 
 //CHAT
-const server = http.createServer();
-const wsServer = new WebSocketServer({ server });
+
+const wsServer = new WebSocketServer({ port: process.env.PORT_WS  });
  
 
 const rooms = {};
 //const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
 let connetionsCount = 0;
 
-console.log("WebSocket server: " + wsServer.address())
+console.log("WebSocket server: " + JSON.stringify(wsServer.address()))
 
 wsServer.on("connection", async (socket, req) => {  
 
