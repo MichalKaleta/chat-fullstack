@@ -18,42 +18,7 @@ console.log("router.js loaded");
 
 //CHAT
 
-const wsServer = new WebSocketServer({ port: process.env.PORT_WS  });
- 
 
-const rooms = {};
-//const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
-let connetionsCount = 0;
-
-console.log("WebSocket server: " + JSON.stringify(wsServer.address()))
-
-wsServer.on("connection", async (socket, req) => {  
-
-  console.log("New connection established");
-  const len = req.url.length;
-  const url = new URL("https://www.placeholder.com" + req.url.slice(1, len));
-  const room = url.searchParams.get("room");
-
-  if (!rooms[room]) {
-    rooms[room] = [];
-  }
-  rooms[room].push(socket);
-
-  console.table(rooms);
-
-  socket.on("message", (data, isBinary) => {
-    const { message = "", guestName, room } = JSON.parse(data);
-    const responseData = JSON.stringify({
-      message: isBinary ? message : message.toString(),
-      id: v4(),
-      sender: guestName,
-    });
-
-    rooms[room]?.forEach((socket, i) => {
-      socket.send(responseData);
-    });
-  });
-});
 
 router.post("/login", async (req, res, next) => {
   try {

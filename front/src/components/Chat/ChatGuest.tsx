@@ -3,12 +3,12 @@ import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
 //const wsUri = `ws://${window.location.hostname}:1337`;
-const wsUri = `wss://${window.location.hostname}:1337`;
+const wsUri = `wss://${window.location.hostname}/ws`;
 console.log("wsUri: " + wsUri);
 type chatMsgsType = { 
   message: string;
   id: string;
-  sender: string;
+  sender: string; 
 };
 
 const ChatGuest = () => {
@@ -19,30 +19,54 @@ const ChatGuest = () => {
   const [socket, setSocket] = useState<WebSocket | null>();
 
   const inviteLink = `${location.host}/join-guest-chat/${room}`;
+let reconnectInterval = 5000; // 5 seconds
+
+
+const connect = () => {
+  const socketUrl = encodeURI(`${wsUri}?guestName=${guestName}&room=${room}`);
+  console.log(socketUrl);
+  setSocket(() => new WebSocket(socketUrl));
+};
 
   useEffect(() => {
-    const socketUrl = encodeURI(`${wsUri}?guestName=${guestName}&room=${room}`);
-    console.log(socketUrl);
-    setSocket(() => new WebSocket(socketUrl));
-    //return () => socket?.close();
+connect();  
   }, []);
 
+
+
+useEffect(() => {
+  if(socket){
+    socket.onopen = () => {
+    console.log('Connected to WebSocket');
+  };
+
+  socket.onclose = (event) => {
+    console.log('Socket closed. Attempting reconnect...', event.reason);
+    setTimeout(connect, reconnectInterval);
+  };
   socket?.addEventListener("message", (event: { data: string }) => {
     const msg = JSON.parse(event.data);
 
     setChatMsgs(() => [...chatMsgs, msg]);
   });
-
+  
+  socket.onerror = (error) => {
+    console.error('Socket error:', error);
+    socket?.close();
+  };
   console.log(socket);
-
-  const sendMessage = () => {
+}
+}, [socket]);
+  
+const sendMessage = () => {
     console.log("sending message: " + message);
-    message && socket?.send(JSON.stringify({ message, guestName, room }));
-    setMessage("");
+    if (socket?.readyState === WebSocket.OPEN) {
+      message && socket?.send(JSON.stringify({ message, guestName, room }));
+      setMessage("");  
+    }
   };
 
-  return (
-    <>
+  
       <div className="chat__container  w-3/5">
         Hey {guestName}!
         <InputContainer className="">

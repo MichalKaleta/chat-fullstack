@@ -4,7 +4,10 @@ const express = require("express");
 const cors = require("cors");
 const router = require("./router/router");
 const verifyToken = require("./middleware/jwtAuthorization");
+const { WebSocketServer } = require("ws");
+const { v4 } = require("uuid");
 const app = express();
+
 const errorHandler = (err, req, res, next) => {
   console.log(`\x1b[33m ${JSON.stringify(err)}\x1b[0m`);
   console.log(`\x1b[33m ${err}\x1b[0m`);
@@ -26,6 +29,44 @@ app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.use("/api", router);
+//const wsServer = new WebSocketServer({ port: process.env.PORT_WS  });
+ 
+const server = http.createServer(app);
+
+const wsServer = new WebSocketServer({ server, path: '/ws' });
+const rooms = {};
+//const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
+let connetionsCount = 0;
+
+console.log("WebSocket server: " + JSON.stringify(wsServer.address()))
+
+wsServer.on("connection", async (socket, req) => {  
+  console.log("New connection established");
+  const len = req.url.length;
+  const url = new URL("https://www.placeholder.com" + req.url.slice(1, len));
+  const room = url.searchParams.get("room");
+
+  if (!rooms[room]) {
+    rooms[room] = [];
+  }
+  rooms[room].push(socket);
+
+  console.table(rooms);
+
+  socket.on("message", (data, isBinary) => {
+    const { message = "", guestName, room } = JSON.parse(data);
+    const responseData = JSON.stringify({
+      message: isBinary ? message : message.toString(),
+      id: v4(),
+      sender: guestName,
+    });
+
+    rooms[room]?.forEach((socket, i) => {
+      socket.send(responseData);
+    });
+  });
+});
+
 
 app.use(errorHandler);
 
