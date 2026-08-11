@@ -20,6 +20,7 @@ var privateKey = fs.readFileSync(__dirname + "/cert/selfsigned.key", "utf-8");
 var certificate = fs.readFileSync(__dirname + "/cert/selfsigned.crt", "utf-8");
 
 var credentials = { key: privateKey, cert: certificate };
+const PORT = process.env.PORT || process.env.PORT_APP || 3000;
 
 console.log("I am running in " + process.env.NODE_ENV + " mode");
 
@@ -31,9 +32,9 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 app.use("/api", router);
 //const wsServer = new WebSocketServer({ port: process.env.PORT_WS  });
  
-const server = http.createServer(app);
+const server = http.createServer(app);    
 
-const wsServer = new WebSocketServer({ path: '/ws' ,port: 1337})  ; 
+const wsServer = new WebSocketServer({ path: '/ws',server });  ; 
 
 console.log("WebSocket server: " + JSON.stringify(wsServer))
 const rooms = {};
@@ -60,7 +61,7 @@ wsServer.on("connection", async (socket, req) => {
 
     console.log("Received message:", message, "from guest:", guestName, "in room:", room);
     const responseData = JSON.stringify({
-      message: isBinary ? message : message.toString(),
+      message: isBinary ? message : message.toString(), 
       id: v4(),
       sender: guestName,
     });
@@ -87,7 +88,7 @@ if (isProduction) {
     });
 }
 
-const PORT = process.env.PORT || process.env.PORT_APP || 3000;
+
 
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {

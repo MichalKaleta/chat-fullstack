@@ -6,7 +6,7 @@ import { Input, Button, InputContainer } from "../Form/Form";
 
 const WS_PROTOCOL = window.location.protocol === "https:" ? "wss" : "ws";
 
-const wsUri = `${WS_PROTOCOL}://${window.location.hostname}:1337/ws`;
+const wsUri = `${WS_PROTOCOL}://${window.location.hostname}:10000/ws`;
 
 
 console.log("wsUri: " + wsUri);
