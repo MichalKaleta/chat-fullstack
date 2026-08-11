@@ -81,18 +81,20 @@ const sendMessage = () => {
 
   return (
       <div className="chat__container  w-3/5">
-        Hey {guestName}!
-        <InputContainer className="">
-          <p>Press </p>
-          <Button
-            className="w-400"
-            text=" copy link "
-            onClick={() => {
-              navigator.clipboard.writeText(inviteLink);
-            }}
-          />
-          <p> and send it to Your Friends!</p>
-        </InputContainer>
+          
+             Hey {guestName}!
+            <Button
+              className="w-400 display-inline-block"
+              text=" Press "
+              onClick={() => {
+                navigator.clipboard.writeText(inviteLink);
+              }}
+            />
+            to copy the invite link
+          <br />
+          <br />
+          <br />
+       
         <ul className="flex flex-col w-full h-96 overflow-hidden bg-slate-200  mt-10 p-4 justify-end items-end">
           {chatMsgs.map(({ message, id, sender }) => (
             <li

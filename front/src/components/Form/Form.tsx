@@ -22,7 +22,7 @@ function Button({
       >
         <span
           className={`flex text-align-center -translate-x-1 -translate-y-1 
-            border-2 border-black bg-yellow-500 p-1 px-2 text-2xl hover:-translate-y-1.5 hover:-translate-x-1.5 
+            border-2 border-black bg-yellow-500 p-1.5 px-3 text-2xl hover:-translate-y-1.5 hover:-translate-x-1.5 
             active:translate-x-0 active:translate-y-0 
             rounded-md transition-all h-11`}
         >

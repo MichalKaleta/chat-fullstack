@@ -1,7 +1,11 @@
 # chat-fullstack
 
-<b>Fullstack chat app with login</b><br />
+<b>Chat</b><br />
+
+ <a href='https://chat-fullstack-1-iedt.onrender.com/'>
+ WORKING PROTOTYPE
 <img src='./screenshot.png' />
+</a>
 <br />
 <b>Tech stack: </b> <br />
 Dev tools: Docker, Vite
