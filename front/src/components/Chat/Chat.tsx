@@ -1,7 +1,13 @@
 import { useEffect, useState, FC } from "react";
 import { Input, Button, InputContainer } from "../Form/Form";
 
-const wsUri = "ws://localhost:1337";
+const { VITE_ENV, VITE_API_PORT, VITE_WS_URL } = import.meta.env;
+const WS_PROTOCOL = window.location.protocol === "https:" ? "wss" : "ws";
+const WS_HOST =
+  VITE_ENV === "production"
+    ? window.location.host
+    : `localhost:${VITE_API_PORT || "3000"}`;
+const wsUri = VITE_WS_URL || `${WS_PROTOCOL}://${WS_HOST}/ws`;
 
 type chatMsgsType = {
   message: string;
@@ -13,21 +19,36 @@ const Chat: FC<{ login: string }> = ({ login = "" }) => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const wsUrl = encodeURI(`${wsUri}?user=${login}`);
+  const wsUrl = encodeURI(`${wsUri}?user=${login}&room=global`);
 
   useEffect(() => {
-    setSocket(new WebSocket(wsUrl));
-    return () => {};
-  }, []);
+    const ws = new WebSocket(wsUrl);
+    setSocket(ws);
+    return () => {
+      ws.close();
+    };
+  }, [wsUrl]);
 
-  socket?.addEventListener("message", (event: { data: string }) => {
-    setChatMsgs(() => [...chatMsgs, JSON.parse(event.data)]);
-    setMessage(() => "");
-  });
+  useEffect(() => {
+    if (!socket) return;
 
-  socket?.addEventListener("open", () => {
-    console.log("sdfOPENDdf");
-  });
+    const onMessage = (event: { data: string }) => {
+      setChatMsgs((prev) => [...prev, JSON.parse(event.data)]);
+      setMessage("");
+    };
+
+    const onOpen = () => {
+      console.log("Connected to WebSocket");
+    };
+
+    socket.addEventListener("message", onMessage);
+    socket.addEventListener("open", onOpen);
+
+    return () => {
+      socket.removeEventListener("message", onMessage);
+      socket.removeEventListener("open", onOpen);
+    };
+  }, [socket]);
 
   const sendMessage = () => {
     socket?.send(JSON.stringify({ message, login }));

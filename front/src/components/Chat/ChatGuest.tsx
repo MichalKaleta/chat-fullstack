@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
-//const wsUri = `ws://${window.location.hostname}:1337`;
-
+const { VITE_ENV, VITE_API_PORT, VITE_WS_URL } = import.meta.env;
 const WS_PROTOCOL = window.location.protocol === "https:" ? "wss" : "ws";
-
-const wsUri = `${WS_PROTOCOL}://${window.location.hostname}/ws`;
+const WS_HOST =
+  VITE_ENV === "production"
+    ? window.location.host
+    : `localhost:${VITE_API_PORT || "3000"}`;
+const wsUri = VITE_WS_URL || `${WS_PROTOCOL}://${WS_HOST}/ws`;
 
 
 console.log("wsUri: " + wsUri);
@@ -27,15 +29,15 @@ const ChatGuest: React.FC = () => {
   const reconnectInterval = 5000; // 5 seconds
 
 
-  const connect = () => {
+  const connect = useCallback(() => {
     const socketUrl = encodeURI(`${wsUri}?guestName=${guestName}&room=${room}`);
     console.log(socketUrl);
     setSocket(() => new WebSocket(socketUrl));
-  };
+  }, [guestName, room]);
 
-    useEffect(() => {
+     useEffect(() => {
        connect();  
-    }, []);
+     }, [connect]);
 
 
     useEffect(() => {
@@ -55,7 +57,7 @@ const ChatGuest: React.FC = () => {
         socket?.addEventListener("message", (event: { data: string }) => {
           const msg = JSON.parse(event.data);
 
-          setChatMsgs(() => [...chatMsgs, msg]);
+          setChatMsgs((prev) => [...prev, msg]);
         });
       
       socket.onerror = (error) => {
@@ -65,7 +67,7 @@ const ChatGuest: React.FC = () => {
       console.log(socket);
 
     }
-  }, [socket]);
+  }, [socket, connect]);
   
 const sendMessage = () => {
 

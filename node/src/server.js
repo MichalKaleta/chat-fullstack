@@ -13,6 +13,7 @@ const errorHandler = (err, req, res, next) => {
   console.log(`\x1b[33m ${err}\x1b[0m`);
   res.status(401).send(err.message);
 };
+
 var fs = require("fs");
 var http = require("http");
 var https = require("https");
@@ -29,25 +30,23 @@ app.use(cors());
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-app.use("/api", router);
 //const wsServer = new WebSocketServer({ port: process.env.PORT_WS  });
- 
+
 const server = http.createServer(app);    
 
-const wsServer = new WebSocketServer({ path: '/ws',server });  ; 
+const wsServer = new WebSocketServer({ path: '/ws', server });
 
-console.log("WebSocket server: " + JSON.stringify(wsServer))
+//console.log("WebSocket server: " + JSON.stringify(wsServer))
 const rooms = {};
-//const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
+//const wsServer = new WebSocketServer({ port: process.env.PORT_WS }) 
 let connetionsCount = 1000;
 
-console.log("WebSocket server: " + JSON.stringify(wsServer.address()))
+console.log(wsServer);
 
 wsServer.on("connection", async (socket, req) => {  
   console.log("New connection established");
-  const len = req.url.length;
-  const url = new URL("https://www.placeholder.com" + req.url.slice(1, len));
-  const room = url.searchParams.get("room");
+  const url = new URL(req.url || "/ws", "http://localhost");
+  const room = url.searchParams.get("room") || "global";
 
   if (!rooms[room]) {
     rooms[room] = [];
@@ -57,22 +56,32 @@ wsServer.on("connection", async (socket, req) => {
   console.table(rooms);
 
   socket.on("message", (data, isBinary) => {
-    const { message = "", guestName, room } = JSON.parse(data);
+    const { message = "", guestName, login, room } = JSON.parse(data.toString());
+    const targetRoom = room || "global";
+    const sender = guestName || login || "anonymous";
 
-    console.log("Received message:", message, "from guest:", guestName, "in room:", room);
+    console.log("Received message:", message, "from sender:", sender, "in room:", targetRoom);
     const responseData = JSON.stringify({
       message: isBinary ? message : message.toString(), 
       id: v4(),
-      sender: guestName,
+      sender,
     });
 
-    rooms[room]?.forEach((socket, i) => {
+    rooms[targetRoom]?.forEach((socket, i) => {
       socket.send(responseData);
     });
+  });
+
+  socket.on("close", () => {
+    rooms[room] = (rooms[room] || []).filter((client) => client !== socket);
+    if (!rooms[room].length) {
+      delete rooms[room];
+    }
   });
 });
 
 
+app.use("/api", router);
 app.use(errorHandler);
 
 const isProduction =
@@ -91,7 +100,7 @@ if (isProduction) {
 
 
 if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
   });
 }
