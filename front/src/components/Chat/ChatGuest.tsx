@@ -6,7 +6,7 @@ import { Input, Button, InputContainer } from "../Form/Form";
 
 const WS_PROTOCOL = window.location.protocol === "https:" ? "wss" : "ws";
 
-const wsUri = `${WS_PROTOCOL}://${window.location.hostname}:10000/ws`;
+const wsUri = `${WS_PROTOCOL}://${window.location.hostname}/ws`;
 
 
 console.log("wsUri: " + wsUri);
@@ -42,6 +42,8 @@ const ChatGuest: React.FC = () => {
       if(socket){
        
         console.log("socket: " + socket);
+
+
         socket.onopen = () => {
           console.log('Connected to WebSocket');
         };
@@ -66,6 +68,8 @@ const ChatGuest: React.FC = () => {
   }, [socket]);
   
 const sendMessage = () => {
+
+  console.log("ready stage" + socket?.readyState);
   if (socket?.readyState === WebSocket.OPEN) {
       console.log("socket open and sending message: " + message);
       message && socket?.send(JSON.stringify({ message, guestName, room }));
