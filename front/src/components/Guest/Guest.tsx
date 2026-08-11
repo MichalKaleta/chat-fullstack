@@ -16,6 +16,8 @@ export default function Guest({ getLogin }: Props) {
     });
     const room = res.data.room;
     navigate(`/chat/${room}/${guestName}`);
+
+    
   };
 
   return (

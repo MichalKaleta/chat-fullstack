@@ -33,10 +33,12 @@ app.use("/api", router);
  
 const server = http.createServer(app);
 
-const wsServer = new WebSocketServer({ server, path: '/ws' });
+const wsServer = new WebSocketServer({ path: '/ws' ,port: 1337})  ; 
+
+console.log("WebSocket server: " + JSON.stringify(wsServer))
 const rooms = {};
 //const wsServer = new WebSocketServer({ port: process.env.PORT_WS });
-let connetionsCount = 0;
+let connetionsCount = 1000;
 
 console.log("WebSocket server: " + JSON.stringify(wsServer.address()))
 
@@ -55,6 +57,8 @@ wsServer.on("connection", async (socket, req) => {
 
   socket.on("message", (data, isBinary) => {
     const { message = "", guestName, room } = JSON.parse(data);
+
+    console.log("Received message:", message, "from guest:", guestName, "in room:", room);
     const responseData = JSON.stringify({
       message: isBinary ? message : message.toString(),
       id: v4(),

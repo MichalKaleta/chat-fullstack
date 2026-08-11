@@ -3,7 +3,12 @@ import { useParams } from "react-router";
 import { Input, Button, InputContainer } from "../Form/Form";
 
 //const wsUri = `ws://${window.location.hostname}:1337`;
-const wsUri = `wss://${window.location.hostname}/ws`;
+
+const WS_PROTOCOL = window.location.protocol === "https:" ? "wss" : "ws";
+
+const wsUri = `${WS_PROTOCOL}://${window.location.hostname}:1337/ws`;
+
+
 console.log("wsUri: " + wsUri);
 type chatMsgsType = { 
   message: string;
@@ -11,62 +16,64 @@ type chatMsgsType = {
   sender: string; 
 };
 
-const ChatGuest = () => {
+const ChatGuest: React.FC = () => {
   const [message, setMessage] = useState("");
   const [chatMsgs, setChatMsgs] = useState<chatMsgsType[]>([]);
   //const wsUrl = encodeURI(wsUri);
   const { room, guestName } = useParams();
-  const [socket, setSocket] = useState<WebSocket | null>();
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const inviteLink = `${location.host}/join-guest-chat/${room}`;
-let reconnectInterval = 5000; // 5 seconds
+  const reconnectInterval = 5000; // 5 seconds
 
 
-const connect = () => {
-  const socketUrl = encodeURI(`${wsUri}?guestName=${guestName}&room=${room}`);
-  console.log(socketUrl);
-  setSocket(() => new WebSocket(socketUrl));
-};
-
-  useEffect(() => {
-connect();  
-  }, []);
-
-
-
-useEffect(() => {
-  if(socket){
-    socket.onopen = () => {
-    console.log('Connected to WebSocket');
+  const connect = () => {
+    const socketUrl = encodeURI(`${wsUri}?guestName=${guestName}&room=${room}`);
+    console.log(socketUrl);
+    setSocket(() => new WebSocket(socketUrl));
   };
 
-  socket.onclose = (event) => {
-    console.log('Socket closed. Attempting reconnect...', event.reason);
-    setTimeout(connect, reconnectInterval);
-  };
-  socket?.addEventListener("message", (event: { data: string }) => {
-    const msg = JSON.parse(event.data);
+    useEffect(() => {
+       connect();  
+    }, []);
 
-    setChatMsgs(() => [...chatMsgs, msg]);
-  });
-  
-  socket.onerror = (error) => {
-    console.error('Socket error:', error);
-    socket?.close();
-  };
-  console.log(socket);
-}
-}, [socket]);
+
+    useEffect(() => {
+      if(socket){
+       
+        console.log("socket: " + socket);
+        socket.onopen = () => {
+          console.log('Connected to WebSocket');
+        };
+
+        socket.onclose = (event) => {
+          console.log('Socket closed. Attempting reconnect...', event.reason);
+          setTimeout(connect, reconnectInterval);
+        };
+        socket?.addEventListener("message", (event: { data: string }) => {
+          const msg = JSON.parse(event.data);
+
+          setChatMsgs(() => [...chatMsgs, msg]);
+        });
+      
+      socket.onerror = (error) => {
+        console.error('Socket error:', error);
+        socket?.close();
+      };
+      console.log(socket);
+
+    }
+  }, [socket]);
   
 const sendMessage = () => {
-    console.log("sending message: " + message);
-    if (socket?.readyState === WebSocket.OPEN) {
+  if (socket?.readyState === WebSocket.OPEN) {
+      console.log("socket open and sending message: " + message);
       message && socket?.send(JSON.stringify({ message, guestName, room }));
       setMessage("");  
-    }
+    }     
   };
 
-  
+  return (
       <div className="chat__container  w-3/5">
         Hey {guestName}!
         <InputContainer className="">
@@ -99,7 +106,7 @@ const sendMessage = () => {
           <Button className="mr-0" text="Send" onClick={sendMessage} />
         </InputContainer>
       </div>
-    </>
-  );
+    );
 };
+
 export default ChatGuest;
