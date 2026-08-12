@@ -44,8 +44,6 @@ const ChatGuest: React.FC = () => {
       if(socket){
        
         console.log("socket: " + socket);
-
-
         socket.onopen = () => {
           console.log('Connected to WebSocket');
         };
@@ -83,33 +81,33 @@ const sendMessage = () => {
       <div className="chat__container  w-3/5">
           
              Hey {guestName}!
+             <br />
             <Button
               className="w-400 display-inline-block"
               text=" Press "
               onClick={() => {
                 navigator.clipboard.writeText(inviteLink);
               }}
-            />
-            to copy the invite link
+            />  
+            to copy the invite link. Then share it with your friends to join the chat room!    
           <br />
-          <br />
-          <br />
+
        
-        <ul className="flex flex-col w-full h-96 overflow-hidden bg-slate-200  mt-10 p-4 justify-end items-end">
+        <ul className="flex flex-col w-[500px] h-96 overflow-hidden rounded-md border-4  border-black   bg-slate-200  mt-10 p-4 justify-end items-end">
           {chatMsgs.map(({ message, id, sender }) => (
-            <li
+            <li   
               key={id}
               className={`${
                 (sender != guestName && "self-start bg-yellow-500") ||
-                "bg-sky-300"
+                "bg-sky-300"                              
               }  max-w-80 border-r-4 border-b-4 border-l-2 border-t-2 border-black rounded-xl text-xl p-2 my-1`}
             >
               <div className="text-xs .ease-linear duration-75">{sender}</div>
               <div>{message}</div>
-            </li>
+            </li> 
           ))}
         </ul>
-        <InputContainer>
+        <InputContainer>  
           <Input value={message} onChange={(e) => setMessage(e.target.value)} />
           <Button className="mr-0" text="Send" onClick={sendMessage} />
         </InputContainer>

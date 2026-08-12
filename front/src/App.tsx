@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Router from "./Router";
 import Guest from "./components/Guest/Guest";
 import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
+import Register from "./components/Register/Register";  
 import "./App.scss";
 import { BrowserRouter } from "react-router";
 
@@ -16,7 +16,7 @@ function App() {
   console.log(login);
   return (
     <BrowserRouter>
-      <main className="min-w-auto font-mono px-10 text-2xl">
+      <main className="min-w-auto font-mono px-10 text-2xl ">
         <Box>
           <Tabs
             className="header__tabs"

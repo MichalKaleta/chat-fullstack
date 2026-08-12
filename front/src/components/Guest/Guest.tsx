@@ -23,6 +23,7 @@ export default function Guest({ getLogin }: Props) {
   return (
     <div className="my-4">
       <form
+      className="flex items-center"
         onSubmit={(e) => {
           e.preventDefault();
           console.log(e);
@@ -31,7 +32,7 @@ export default function Guest({ getLogin }: Props) {
       >
         <Input
           value={guestName}
-          placeholder="guest name"
+          placeholder="Enter Your name"
           type="text"
           onChange={(e) => {
             setGuestName(e.target.value);

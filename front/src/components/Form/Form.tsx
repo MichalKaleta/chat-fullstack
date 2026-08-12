@@ -53,10 +53,10 @@ function Input({
         value={value}
         name={name || label}
         type={type}
-        className={`w-96 border-black border-2 text-2xl p-2.5 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] focus:bg-[#FFA6F6] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] rounded-md m-2 ${className}`}
+        className={`w-96 border-black border-2 text-2xl p-2.5 pb-2 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-[#FFA6F6] shadow-[2px_2px_0px_rgba(0,0,0,1)] rounded-md m-2 ${className}`}
         placeholder={placeholder}
         onChange={onChange}
-      />
+      />  
     </>
   );
 }

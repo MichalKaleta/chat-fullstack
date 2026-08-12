@@ -1,5 +1,5 @@
 import { useEffect, useState, FC } from "react";
-import { Input, Button, InputContainer } from "../Form/Form";
+import { Input, Button,  } from "../Form/Form";
 
 const { VITE_ENV, VITE_API_PORT, VITE_WS_URL } = import.meta.env;
 const WS_PROTOCOL = window.location.protocol === "https:" ? "wss" : "ws";
@@ -74,14 +74,14 @@ const Chat: FC<{ login: string }> = ({ login = "" }) => {
           </li>
         ))}
       </ul>
-      <InputContainer>
+
         <Input value={message} onChange={(e) => setMessage(e.target.value)} />
         <Button
           className="mr-0"
           text="Send"
           onClick={() => message && sendMessage()}
         />
-      </InputContainer>
+    
     </div>
   );
 };

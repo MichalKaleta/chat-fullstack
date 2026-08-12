@@ -3,7 +3,7 @@
 <b>Chat</b><br />
 
  <a href='https://chat-fullstack-1-iedt.onrender.com/'>
- WORKING PROTOTYPE
+<p> WORKING PROTOTYPE</p>
 <img src='./screenshot.png' />
 </a>
 <br />
