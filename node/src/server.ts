@@ -88,14 +88,14 @@ app.use(errorHandler);
 const isProduction =
   process.env.NODE_ENV === "production" || process.env.ENV === "production";
 
-if (isProduction) {
+if (!isProduction) {
   console.log("in production; port:", process.env.PORT);
   app.use("/", express.static(path.join(__dirname, "../../front", "dist")));
   console.log("in production 2nd steps");
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../../front", "dist", "index.html"));
-  });
+  // app.get("/*", (req, res) => {
+  //   res.sendFile(path.join(__dirname, "../../front", "dist", "index.html"));
+  // });
   console.log("Finished setting up production static files");
 }
 
