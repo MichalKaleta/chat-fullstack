@@ -41,6 +41,8 @@ const rooms = {};
 //const wsServer = new WebSocketServer({ port: process.env.PORT_WS })
 let connetionsCount = 1000;
 
+console.log(wsServer);
+
 wsServer.on("connection", async (socket, req) => {
   console.log("New connection established");
   const url = new URL(req.url || "/ws", "http://localhost");
@@ -63,6 +65,14 @@ wsServer.on("connection", async (socket, req) => {
     const targetRoom = room || "global";
     const sender = guestName || login || "anonymous";
 
+    console.log(
+      "Received message:",
+      message,
+      "from sender:",
+      sender,
+      "in room:",
+      targetRoom,
+    );
     const responseData = JSON.stringify({
       message: isBinary ? message : message.toString(),
       id: v4(),
@@ -86,17 +96,20 @@ app.use("/api", router);
 app.use(errorHandler);
 
 const isProduction =
-  process.env.NODE_ENV === "production" || process.env.ENV === "production";
+  process.env.NODE_ENV === "production" ||
+  process.env.ENV === "production" ||
+  Boolean(process.env.VERCEL);
 
 if (isProduction) {
-  console.log("in production; port:", process.env.PORT);
+  console.log("production", process.env.PORT);
   app.use("/", express.static(path.join(__dirname, "../../front", "dist")));
-  console.log("in production 2nd steps");
-
-  // app.get("/*", (req, res) => {
+  // app.get("*", (req, res) => {
   //   res.sendFile(path.join(__dirname, "../../front", "dist", "index.html"));
   // });
-  console.log("Finished setting up production static files");
 }
+
+server.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});
 
 module.exports = app;
