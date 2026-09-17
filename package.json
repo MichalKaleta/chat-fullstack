@@ -6,10 +6,10 @@
   "scripts": {
     "install": "npm install --prefix ./front && npm install --prefix ./node",
     "build": "npm run build --prefix ./front",
-    "start": "cd ./node && node ./src/server.js",
+    "start": "cd ./node && tsx ./src/server.ts",
     "dev-front": "cd ./front && npm run dev",
     "dev-back": "cd ./node && npm run dev",
-    "dev": "npm run dev-front &&  nodemon --env-file=.env.production ./src/server.js",
+    "dev": "npm run dev-front &&  nodemon --env-file=.env.production ./src/server.ts",
     "license": "ISC",
     "dependencies": {},
     "devDependencies": {}
