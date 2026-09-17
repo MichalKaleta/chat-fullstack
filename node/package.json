@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Erro  r: no test specified\" && exit 1",
     "dev": "nodemon --env-file=.env.development ./src/server.ts",
-    "start": "node ./src/server.ts"
+    "start": "tsx ./src/server.ts"
   },
   "author": "",
   "license": "ISC",
