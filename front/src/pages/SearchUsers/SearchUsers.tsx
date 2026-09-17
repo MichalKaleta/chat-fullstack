@@ -1,5 +1,5 @@
 import { useState, FC } from "react";
-import { Button, Input } from "../Form/Form";
+import { Button, Input } from "../../components/Form/Form";
 import axios from "axios";
 
 type UserListType = {
@@ -37,7 +37,9 @@ const SearchUser: FC = () => {
           value={searchUser}
           placeholder="username"
           type="text"
-          onChange={(e) => setSearchUser(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchUser(e.target.value)
+          }
         />
 
         <Button

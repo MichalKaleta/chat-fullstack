@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Input, Button, InputContainer } from "../components/Form/Form";
+import { Input, Button } from "../components/Form/Form";
 
 const { VITE_ENV, VITE_API_PORT, VITE_WS_URL } = import.meta.env;
 const WS_PROTOCOL = window.location.protocol === "https:" ? "wss" : "ws";
@@ -10,12 +10,11 @@ const WS_HOST =
     : `localhost:${VITE_API_PORT || "3000"}`;
 const wsUri = VITE_WS_URL || `${WS_PROTOCOL}://${WS_HOST}/ws`;
 
-
 console.log("wsUri: " + wsUri);
-type chatMsgsType = { 
+type chatMsgsType = {
   message: string;
   id: string;
-  sender: string; 
+  sender: string;
 };
 
 const ChatGuest: React.FC = () => {
@@ -28,93 +27,83 @@ const ChatGuest: React.FC = () => {
   const inviteLink = `${location.host}/join-guest-chat/${room}`;
   const reconnectInterval = 5000; // 5 seconds
 
-
   const connect = useCallback(() => {
     const socketUrl = encodeURI(`${wsUri}?guestName=${guestName}&room=${room}`);
     console.log(socketUrl);
     setSocket(() => new WebSocket(socketUrl));
   }, [guestName, room]);
 
-     useEffect(() => {
-       connect();  
-     }, [connect]);
+  useEffect(() => {
+    connect();
+  }, [connect]);
 
+  useEffect(() => {
+    if (socket) {
+      console.log("socket: " + socket);
+      socket.onopen = () => {
+        console.log("Connected to WebSocket");
+      };
 
-    useEffect(() => {
-      if(socket){
-       
-        console.log("socket: " + socket);
-        socket.onopen = () => {
-          console.log('Connected to WebSocket');
-        };
+      socket.onclose = (event) => {
+        console.log("Socket closed. Attempting reconnect...", event.reason);
+        setTimeout(connect, reconnectInterval);
+      };
+      socket?.addEventListener("message", (event: { data: string }) => {
+        const msg = JSON.parse(event.data);
 
-        socket.onclose = (event) => {
-          console.log('Socket closed. Attempting reconnect...', event.reason);
-          setTimeout(connect, reconnectInterval);
-        };
-        socket?.addEventListener("message", (event: { data: string }) => {
-          const msg = JSON.parse(event.data);
+        setChatMsgs((prev) => [...prev, msg]);
+      });
 
-          setChatMsgs((prev) => [...prev, msg]);
-        });
-      
       socket.onerror = (error) => {
-        console.error('Socket error:', error);
+        console.error("Socket error:", error);
         socket?.close();
       };
       console.log(socket);
-
     }
   }, [socket, connect]);
-  
-const sendMessage = () => {
 
-  console.log("ready stage" + socket?.readyState);
-  if (socket?.readyState === WebSocket.OPEN) {
+  const sendMessage = () => {
+    console.log("ready stage" + socket?.readyState);
+    if (socket?.readyState === WebSocket.OPEN) {
       console.log("socket open and sending message: " + message);
       message && socket?.send(JSON.stringify({ message, guestName, room }));
-      setMessage("");  
-    }     
+      setMessage("");
+    }
   };
 
   return (
-      <div className="chat__container mt-2  w-[478px]">
-          
-            <h1>
-               Hey {guestName}!
-              </h1>
-            
-            <Button
-              className="w-400 display-inline-block"
-              text=" Press "
-              onClick={() => {  
-                navigator.clipboard.writeText(inviteLink);
-              }}
-            />  
-            to copy the invite link   
-          <br />
-
-        {/* CHAT Window */}
-        <ul className="flex flex-col mb-2 h-96 overflow-hidden rounded-3xl border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] bg-yellow-100 bg-paper mt-10 p-4 justify-end items-end">
-          {chatMsgs.map(({ message, id, sender }) => (
-            <li   
-              key={id}
-              className={`${
-                (sender != guestName && "self-start bg-yellow-500") ||
-                "bg-sky-300"                              
-              } bg-dots max-w-80 border-r-4 border-b-4 border-l-2 border-t-2 border-black rounded-xl text-xl p-2 my-1`}
-            >
-              <div className="text-xs .ease-linear duration-75">{sender}</div>
-              <div>{message}</div>
-            </li> 
-          ))}
-        </ul>
-        <div className="flex mt-4 items-center gap  -4" >
-          <Input  value={message} onChange={(e) => setMessage(e.target.value)} />
-          <Button className="mr-0 ml-2" text="Send" onClick={sendMessage} />
-        </div>
+    <div className="chat__container mt-2  w-[478px]">
+      <h1>Hey {guestName}!</h1>
+      <Button
+        className="w-400 display-inline-block"
+        text=" Press "
+        onClick={() => {
+          navigator.clipboard.writeText(inviteLink);
+        }}
+      />
+      to copy the invite link
+      <br />
+      {/* CHAT Window */}
+      <ul className="flex flex-col mb-2 h-96 overflow-hidden rounded-3xl border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] bg-yellow-100 bg-paper mt-10 p-4 justify-end items-end">
+        {chatMsgs.map(({ message, id, sender }) => (
+          <li
+            key={id}
+            className={`${
+              (sender != guestName && "self-start bg-yellow-500") ||
+              "bg-sky-300"
+            } bg-dots max-w-80 border-r-4 border-b-4 border-l-2 border-t-2 border-black rounded-xl text-xl p-2 my-1`}
+          >
+            <div className="text-xs .ease-linear duration-75">{sender}</div>
+            <div>{message}</div>
+          </li>
+        ))}
+      </ul>
+      <div className="flex mt-4 items-center gap  -4">
+        <Input value={message} onChange={(e) => setMessage(e.target.value)} />
+        <Button className="mr-0 ml-2" text="Send" onClick={sendMessage} />
       </div>
-    );
+    </div>
+  );
 };
 
 export default ChatGuest;
