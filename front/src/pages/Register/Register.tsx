@@ -1,7 +1,7 @@
 import { useState, FC } from "react";
 
 import axios from "axios";
-import { Button, Input } from "../Form/Form";
+import { Button, Input } from "../../components/Form/Form";
 import "./Register.scss";
 
 const Register: FC = () => {

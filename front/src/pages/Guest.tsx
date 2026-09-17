@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { apiCall } from "../../utils/apiCall";
-import { Button, Input } from "../Form/Form";
+import { apiCall } from "../utils/apiCall";
+import { Button, Input } from "../components/Form/Form";
 
 type Props = { getLogin: (name: string) => void };
 export default function Guest({ getLogin }: Props) {

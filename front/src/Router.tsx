@@ -1,11 +1,11 @@
 import { Routes, Route } from "react-router";
-import ChatGuest from "./components/Chat/ChatGuest";
-import ChatGuestJoin from "./components/Chat/ChatGuestJoin";
+import Chat from "./pages/Chat";
+import ChatGuestJoin from "./pages/ChatGuestJoin";
 
 export default function Router() {
   return (
     <Routes>
-      <Route path="/chat/:room/:guestName" element={<ChatGuest />} />
+      <Route path="/chat/:room/:guestName" element={<Chat />} />
       <Route path="/join-guest-chat/:room" element={<ChatGuestJoin />} />
     </Routes>
   );

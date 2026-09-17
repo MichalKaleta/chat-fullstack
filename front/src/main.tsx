@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
 function logErrorToService(error: Error, info: string) {
-  // Use your preferred error logging service
+  // Use your preferred error logging servicep
   console.error("Caught an error:", error, info);
 }
 ReactDOM.createRoot(document.getElementById("root")!).render(

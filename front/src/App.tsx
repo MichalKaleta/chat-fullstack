@@ -1,13 +1,14 @@
 import { useState } from "react";
 import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import Tab from "@mui/material/Tab";    
 import Box from "@mui/material/Box";
 import Router from "./Router";
-import Guest from "./components/Guest/Guest";
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";  
-import "./App.scss";
+import Guest from "./pages/Guest";
+import Login from "./pages/Login";
+import Register from "./pages/Register/Register";  
+import "./App.scss";  
 import { BrowserRouter } from "react-router";
+import "./App.css";
 
 function App() {
   const [login, setLogin] = useState("");

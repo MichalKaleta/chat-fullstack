@@ -1,9 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { Button, Input } from "../Form/Form";
+import { Button, Input } from "../components/Form/Form";
 import { useQuery } from "react-query";
 import { AxiosError } from "axios";
-import { apiCall } from "../../utils/apiCall";
+import { apiCall } from "../utils/apiCall";
 
 //const host2 = "172.18.176.94";
 
@@ -59,7 +59,7 @@ const Login: React.FC<LoginParams> = ({ getLogin }) => {
     {
       onSuccess: (res) => getLogin(res.data.login),
       enabled: false,
-    }
+    },
   );
   console.log(data);
 

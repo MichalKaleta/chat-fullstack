@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import Dialog from "@mui/material/Dialog";
-import { Button } from "../Form/Form";
-import { Input } from "../Form/Form";
+import { Button } from "../components/Form/Form";
+import { Input } from "../components/Form/Form";
 import { useState } from "react";
 import DialogTitle from "@mui/material/DialogTitle";
 

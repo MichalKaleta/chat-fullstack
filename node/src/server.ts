@@ -32,18 +32,18 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 
 //const wsServer = new WebSocketServer({ port: process.env.PORT_WS  });
 
-const server = http.createServer(app);    
+const server = http.createServer(app);
 
-const wsServer = new WebSocketServer({ path: '/ws', server });
+const wsServer = new WebSocketServer({ path: "/ws", server });
 
 //console.log("WebSocket server: " + JSON.stringify(wsServer))
 const rooms = {};
-//const wsServer = new WebSocketServer({ port: process.env.PORT_WS }) 
+//const wsServer = new WebSocketServer({ port: process.env.PORT_WS })
 let connetionsCount = 1000;
 
 console.log(wsServer);
 
-wsServer.on("connection", async (socket, req) => {  
+wsServer.on("connection", async (socket, req) => {
   console.log("New connection established");
   const url = new URL(req.url || "/ws", "http://localhost");
   const room = url.searchParams.get("room") || "global";
@@ -56,13 +56,25 @@ wsServer.on("connection", async (socket, req) => {
   console.table(rooms);
 
   socket.on("message", (data, isBinary) => {
-    const { message = "", guestName, login, room } = JSON.parse(data.toString());
+    const {
+      message = "",
+      guestName,
+      login,
+      room,
+    } = JSON.parse(data.toString());
     const targetRoom = room || "global";
     const sender = guestName || login || "anonymous";
 
-    console.log("Received message:", message, "from sender:", sender, "in room:", targetRoom);
+    console.log(
+      "Received message:",
+      message,
+      "from sender:",
+      sender,
+      "in room:",
+      targetRoom,
+    );
     const responseData = JSON.stringify({
-      message: isBinary ? message : message.toString(), 
+      message: isBinary ? message : message.toString(),
       id: v4(),
       sender,
     });
@@ -80,7 +92,6 @@ wsServer.on("connection", async (socket, req) => {
   });
 });
 
-
 app.use("/api", router);
 app.use(errorHandler);
 
@@ -90,20 +101,17 @@ const isProduction =
   Boolean(process.env.VERCEL);
 
 if (isProduction) {
-    console.log("production", process.env.PORT);
-    app.use("/", express.static(path.join(__dirname, "../../front", "dist")));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../../front", "dist", "index.html"));
-    });
+  console.log("production", process.env.PORT);
+  app.use("/", express.static(path.join(__dirname, "../../front", "dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../front", "dist", "index.html"));
+  });
 }
-
-
 
 if (!process.env.VERCEL) {
   server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
   });
 }
-
 
 module.exports = app;

@@ -4,7 +4,7 @@ const { v4 } = require("uuid");
 const { WebSocketServer } = require("ws");
 const verifyToken = require("../middleware/jwtAuthorization");
 const LoginController = require("../controllers/LoginController");
-const RegisterController = require("../controllers/RegiterController");
+import RegisterController from "../controllers/RegiterController";
 const guestController = require("../controllers/GuestController");
 const SearchController = require("../controllers/SearchController");
 const FriendController = require("../controllers/FriendController");
@@ -17,8 +17,6 @@ console.log("router.js loaded");
 //LOGIN
 
 //CHAT
-
-
 
 router.post("/login", async (req, res, next) => {
   try {

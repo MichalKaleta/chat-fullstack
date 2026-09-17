@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { Input, Button, InputContainer } from "../Form/Form";
+import { Input, Button, InputContainer } from "../components/Form/Form";
 
 const { VITE_ENV, VITE_API_PORT, VITE_WS_URL } = import.meta.env;
 const WS_PROTOCOL = window.location.protocol === "https:" ? "wss" : "ws";
@@ -78,39 +78,41 @@ const sendMessage = () => {
   };
 
   return (
-      <div className="chat__container  w-3/5">
+      <div className="chat__container mt-2  w-[478px]">
           
-             Hey {guestName}!
-             <br />
+            <h1>
+               Hey {guestName}!
+              </h1>
+            
             <Button
               className="w-400 display-inline-block"
               text=" Press "
-              onClick={() => {
+              onClick={() => {  
                 navigator.clipboard.writeText(inviteLink);
               }}
             />  
-            to copy the invite link. Then share it with your friends to join the chat room!    
+            to copy the invite link   
           <br />
 
-       
-        <ul className="flex flex-col w-[500px] h-96 overflow-hidden rounded-md border-4  border-black   bg-slate-200  mt-10 p-4 justify-end items-end">
+        {/* CHAT Window */}
+        <ul className="flex flex-col mb-2 h-96 overflow-hidden rounded-3xl border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] bg-yellow-100 bg-paper mt-10 p-4 justify-end items-end">
           {chatMsgs.map(({ message, id, sender }) => (
             <li   
               key={id}
               className={`${
                 (sender != guestName && "self-start bg-yellow-500") ||
                 "bg-sky-300"                              
-              }  max-w-80 border-r-4 border-b-4 border-l-2 border-t-2 border-black rounded-xl text-xl p-2 my-1`}
+              } bg-dots max-w-80 border-r-4 border-b-4 border-l-2 border-t-2 border-black rounded-xl text-xl p-2 my-1`}
             >
               <div className="text-xs .ease-linear duration-75">{sender}</div>
               <div>{message}</div>
             </li> 
           ))}
         </ul>
-        <InputContainer>  
-          <Input value={message} onChange={(e) => setMessage(e.target.value)} />
-          <Button className="mr-0" text="Send" onClick={sendMessage} />
-        </InputContainer>
+        <div className="flex mt-4 items-center gap  -4" >
+          <Input  value={message} onChange={(e) => setMessage(e.target.value)} />
+          <Button className="mr-0 ml-2" text="Send" onClick={sendMessage} />
+        </div>
       </div>
     );
 };
