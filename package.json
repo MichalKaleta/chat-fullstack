@@ -6,7 +6,11 @@
   "scripts": {
     "install": "npm install --prefix ./front && npm install --prefix ./node",
     "build": "npm run build --prefix ./front",
+<<<<<<< HEAD
     "start": "cd ./node && tsx ./src/server.ts",
+=======
+    "start": "cd ./node && npm start",
+>>>>>>> 50cc73b (fix script  errors)
     "dev-front": "cd ./front && npm run dev",
     "dev-back": "cd ./node && npm run dev",
     "dev": "npm run dev-front &&  nodemon --env-file=.env.production ./src/server.ts",
