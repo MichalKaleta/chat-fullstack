@@ -1,19 +1,18 @@
 import { useState, FC } from "react";
-
-import axios from "axios";
 import { Button, Input } from "../../components/Form/Form";
 import "./Register.scss";
+import { apiCall } from "../../utils/apiCall";
 
 const Register: FC = () => {
   const [{ email, password }, setRegisterData] = useState({
-    email: "dude",
-    password: "password",
+    email: "",
+    password: "",
   });
 
   async function sendRegisterData(): Promise<void> {
     console.log(email, password);
-    axios
-      .post("api/register", {
+    apiCall
+      .post("/api/register", {
         email,
         password,
       })
@@ -29,8 +28,8 @@ const Register: FC = () => {
           type="email"
           onChange={(e) =>
             setRegisterData((state) => ({
-              email: state.email,
-              password: e.target.value,
+              ...state,
+              email: e.target.value,
             }))
           }
         />
@@ -41,8 +40,8 @@ const Register: FC = () => {
           placeholder="password"
           onChange={(e) =>
             setRegisterData((state) => ({
-              email: e.target.value,
-              password: state.password,
+              ...state,
+              password: e.target.value,
             }))
           }
         />

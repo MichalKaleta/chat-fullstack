@@ -5,17 +5,14 @@ import { useQuery } from "react-query";
 import { AxiosError } from "axios";
 import { apiCall } from "../utils/apiCall";
 
-//const host2 = "172.18.176.94";
-
 type LoginParams = {
   getLogin: (login: string) => void;
 };
 
 const Login: React.FC<LoginParams> = ({ getLogin }) => {
-  const [{ login, password, guestName = "" }, setLoginData] = useState({
-    login: "dude",
+  const [{ email, password }, setLoginData] = useState({
+    email: "dude",
     password: "password",
-    guestName: "",
   });
 
   const sendGuestName = async () =>
@@ -25,7 +22,7 @@ const Login: React.FC<LoginParams> = ({ getLogin }) => {
 
   const sendLoginData = async () =>
     apiCall.post(`/api/login`, {
-      login,
+      email,
       password,
     });
 
@@ -34,20 +31,21 @@ const Login: React.FC<LoginParams> = ({ getLogin }) => {
     error: guestError,
     refetch: fetchGuest,
   } = useQuery<
-    { data: { login: string; token: string } },
+    { data: { email: string; token: string } },
     AxiosError<{ data: string }>
   >("login", sendGuestName, {
     onSuccess: (res) => {
-      const login = res.data.login;
+      console.log("SuCCESS");
+      const email = res.data.email;
       const token = res.data.token;
       axios.defaults.headers.common = {
         Authorization: `bearer ${token}`,
       };
-      apiCall.get("/api/chat").then(() => getLogin(login));
+      apiCall.get("/api/chat").then(() => getLogin(email));
     },
     enabled: false,
   });
-  console.log(guestData, fetchGuest);
+  console.log(guestData);
 
   const {
     data,
@@ -61,9 +59,9 @@ const Login: React.FC<LoginParams> = ({ getLogin }) => {
       enabled: false,
     },
   );
-  console.log(data);
+  // console.log(data);
 
-  const error = guestError || authError || undefined;
+  const error = guestError || undefined;
   return (
     <div className="my-4">
       {error && (
@@ -77,14 +75,13 @@ const Login: React.FC<LoginParams> = ({ getLogin }) => {
       )}
       <form>
         <Input
-          value={login}
-          placeholder="username"
+          value={email}
+          placeholder="email"
           type="text"
           onChange={(e) =>
             setLoginData((state) => ({
-              login: e.target.value,
+              email: e.target.value,
               password: state.password,
-              guestName: state.guestName,
             }))
           }
         />
@@ -95,9 +92,8 @@ const Login: React.FC<LoginParams> = ({ getLogin }) => {
           type="password"
           onChange={(e) => {
             setLoginData((state) => ({
-              login: state.login,
+              email: state.email,
               password: e.target.value,
-              guestName: state.guestName,
             }));
           }}
         />

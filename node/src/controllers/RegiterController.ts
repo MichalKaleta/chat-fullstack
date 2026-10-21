@@ -8,8 +8,9 @@ import express, {
   type Response,
   type NextFunction,
 } from "express";
+
 //TODO
-export class RegisterController extends BaseController {
+export default class RegisterController extends BaseController {
   private req: Request;
   private res: Response;
 
@@ -30,24 +31,20 @@ export class RegisterController extends BaseController {
       text: "SELECT mail FROM users WHERE email = $1",
       values: [this.email],
     };
-    console.log("asdf");
-    //if (query) return;
-    //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
-    // send mail with defined transport object
+
     const info = await transporter.sendMail({
-      from: '"Maddison Foo Koch 👻" <"mauricio.rolfson88@ethereal.email">', // sender address
-      to: "szefwszechswiata@gmail.com", // list of receivers
-      subject: "michau-michau", // Subject line
-      text: "Hello world?", // plain text body
-      html: "<b>Hello world?</b>", // html body
+      from: "me",
+      to: "szefwszechswiata@gmail.com",
+      subject: "michau-michau",
+      text: "Hello world?",
+      html: "<b>Hello world?</b>",
     });
-    console.log(info);
   };
 
   addUser = async () => {
     const query = {
-      text: "INSERT INTO users(login, password) VALUES($1, $2)",
-      values: [this.login, this.hashPassword],
+      text: "INSERT INTO users(email, password) VALUES($1, $2)",
+      values: [this.email, this.hashPassword],
     };
     const dbResponse = await pool.query(query);
 

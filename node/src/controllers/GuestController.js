@@ -8,6 +8,7 @@ class GuestController {
   };
 
   joinGuestChat = async (req, res) => {
+    const guestName = `${req.body.guestName}-${getRandomInt(10000000)}`;
     res.json({ guestName });
   };
 }

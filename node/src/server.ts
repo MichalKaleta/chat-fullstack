@@ -1,11 +1,19 @@
-const path = require("node:path");
-const pool = require("./config/connection");
-const express = require("express");
-const cors = require("cors");
-const router = require("./router/router");
-const verifyToken = require("./middleware/jwtAuthorization");
-const { WebSocketServer } = require("ws");
-const { v4 } = require("uuid");
+import path from "node:path";
+import pool from "./config/connection";
+import express from "express";
+import cors from "cors";
+import router from "./router/router";
+import verifyToken from "./middleware/jwtAuthorization";
+import WebSocket, { WebSocketServer } from "ws";
+import { v4 } from "uuid";
+import fs from "fs";
+
+import http from "http";
+import https from "https";
+import { Socket } from "node:net";
+import { Duplex } from "node:stream";
+import { initUsersTable } from "../db/init";
+
 const app = express();
 
 const errorHandler = (err, req, res, next) => {
@@ -14,9 +22,6 @@ const errorHandler = (err, req, res, next) => {
   res.status(401).send(err.message);
 };
 
-var fs = require("fs");
-var http = require("http");
-var https = require("https");
 var privateKey = fs.readFileSync(__dirname + "/cert/selfsigned.key", "utf-8");
 var certificate = fs.readFileSync(__dirname + "/cert/selfsigned.crt", "utf-8");
 
@@ -37,61 +42,64 @@ const server = http.createServer(app);
 const wsServer = new WebSocketServer({ path: "/ws", server });
 
 //console.log("WebSocket server: " + JSON.stringify(wsServer))
-const rooms = {};
+const rooms: { [key: string]: WebSocket[] } = {};
 //const wsServer = new WebSocketServer({ port: process.env.PORT_WS })
 let connetionsCount = 1000;
 
 console.log(wsServer);
 
-wsServer.on("connection", async (socket, req) => {
-  console.log("New connection established");
-  const url = new URL(req.url || "/ws", "http://localhost");
-  const room = url.searchParams.get("room") || "global";
+wsServer.on(
+  "connection",
+  async (socket: WebSocket, req: http.IncomingMessage) => {
+    console.log("New connection established");
+    const url = new URL(req.url || "/ws", "http://localhost");
+    const room = url.searchParams.get("room") || "global";
 
-  if (!rooms[room]) {
-    rooms[room] = [];
-  }
-  rooms[room].push(socket);
-
-  console.table(rooms);
-
-  socket.on("message", (data, isBinary) => {
-    const {
-      message = "",
-      guestName,
-      login,
-      room,
-    } = JSON.parse(data.toString());
-    const targetRoom = room || "global";
-    const sender = guestName || login || "anonymous";
-
-    console.log(
-      "Received message:",
-      message,
-      "from sender:",
-      sender,
-      "in room:",
-      targetRoom,
-    );
-    const responseData = JSON.stringify({
-      message: isBinary ? message : message.toString(),
-      id: v4(),
-      sender,
-    });
-
-    rooms[targetRoom]?.forEach((socket, i) => {
-      socket.send(responseData);
-    });
-  });
-
-  socket.on("close", () => {
-    rooms[room] = (rooms[room] || []).filter((client) => client !== socket);
-    if (!rooms[room].length) {
-      delete rooms[room];
+    if (!rooms[room]) {
+      rooms[room] = [];
     }
-  });
-});
+    rooms[room].push(socket);
 
+    console.table(rooms);
+
+    socket.on("message", (data: Buffer, isBinary: boolean) => {
+      const {
+        message = "",
+        guestName,
+        login,
+        room,
+      } = JSON.parse(data.toString());
+      const targetRoom = room || "global";
+      const sender = guestName || login || "anonymous";
+
+      console.log(
+        "Received message:",
+        message,
+        "from sender:",
+        sender,
+        "in room:",
+        targetRoom,
+      );
+      const responseData = JSON.stringify({
+        message: isBinary ? message : message.toString(),
+        id: v4(),
+        sender,
+      });
+
+      rooms[targetRoom]?.forEach((socket: WebSocket, i) => {
+        socket.send(responseData);
+      });
+    });
+
+    socket.on("close", () => {
+      rooms[room] = (rooms[room] || []).filter((client) => client !== socket);
+      if (!rooms[room].length) {
+        delete rooms[room];
+      }
+    });
+  },
+);
+initUsersTable();
 app.use("/api", router);
 app.use(errorHandler);
 

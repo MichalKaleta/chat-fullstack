@@ -13,8 +13,7 @@ const path = require("node:path");
 
 const router = express.Router();
 console.log("router.js loaded");
-
-//LOGIN
+//LOGINsss
 
 //CHAT
 
@@ -44,8 +43,11 @@ router.post("/guest", guestController.sendGuestName);
 
 //REGISTER
 router.post("/register", async (req, res) => {
-  const registerController = new RegisterController(req, res);
-  registerController.sendMail();
+  console.log("register route hit");
+  const registerController = new RegisterController();
+  await registerController.executeImpl(req, res);
+  //sawait registerController.sendMail();ss
+  await registerController.addUser();
 });
 
 router.get("/chat", verifyToken, async (req, res) => {
@@ -64,4 +66,4 @@ router.post("/guest-chat-join", async (req, res) => {
   res.send({ guestName, room });
 });
 
-module.exports = router;
+export default router;

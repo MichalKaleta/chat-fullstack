@@ -1,14 +1,13 @@
 import { ComponentProps, ReactNode } from "react";
 import "./Form.css";
 
-
 type ButtonProps = {
   text?: ReactNode;
 };
 
-function Button({     
+function Button({
   onClick = () => undefined,
-  text,   
+  text,
   type,
   className = "",
   children,
@@ -18,14 +17,14 @@ function Button({
     <>
       <button
         type={type}
-        className={`button bg-black mx-2 mt-2 rounded-md h-11 ${className}`}
+        className={`button bg-yellow-300 b mx-2 mt-2 rounded-md h-11 ${className}`}
         onClick={onClick}
         {...props}
       >
         <span
-          className={`bg-yellow bg-paper flex text-align-center -translate-x-1 -translate-y-1 
-            border-2 border-black   p-1.5 px-3  text-2xl hover:-translate-y-1.5 hover:-translate-x-1.5 
-            active:translate-x-0 active:translate-y-0 
+          className={`bg-yellow-300 bg-paper flex text-align-center -translate-x-1 -translate-y-1
+            border-2 border-black   p-1.5 px-3  text-2xl hover:-translate-y-1.5 hover:-translate-x-1.5
+            active:translate-x-0 active:translate-y-0
             rounded-md transition-all h-11`}
         >
           {text || children}
@@ -42,7 +41,7 @@ type InputProps = {
 function Input({
   placeholder = "",
   type = "text",
-  label = "",   
+  label = "",
   name = label || "",
   value = "",
   onChange,
@@ -58,7 +57,7 @@ function Input({
         className={`bg-paper w-96 border-black border-2 text-2xl p-2.5 pb-2 focus:outline-none focus:shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-[#FFA6F6] shadow-[2px_2px_0px_rgba(0,0,0,1)] rounded-md mys-2 ${className}`}
         placeholder={placeholder}
         onChange={onChange}
-      />  
+      />
     </>
   );
 }
